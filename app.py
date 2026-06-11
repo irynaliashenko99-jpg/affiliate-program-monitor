@@ -306,9 +306,9 @@ with tab1:
         <div style="font-size:12px;color:#52525B;margin-top:6px;">detected this week</div>
       </div>
       <div style="background:#0C0C0F;padding:26px 22px;">
-        <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#3F3F46;margin-bottom:10px;">Opportunities</div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#3F3F46;margin-bottom:10px;">High Priority</div>
         <div style="font-size:42px;font-weight:800;color:#A78BFA;letter-spacing:-2px;line-height:1;">{opps}</div>
-        <div style="font-size:12px;color:#52525B;margin-top:6px;">worth review</div>
+        <div style="font-size:12px;color:#52525B;margin-top:6px;">programs worth review</div>
       </div>
       <div style="background:#0C0C0F;padding:26px 22px;">
         <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#3F3F46;margin-bottom:10px;">Risk Signals</div>
@@ -321,9 +321,9 @@ with tab1:
         <div style="font-size:12px;color:#52525B;margin-top:6px;">license or terms</div>
       </div>
       <div style="background:#0C0C0F;padding:26px 22px;">
-        <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#3F3F46;margin-bottom:10px;">Research Saved</div>
-        <div style="font-size:42px;font-weight:800;color:#22C55E;letter-spacing:-2px;line-height:1;">{hrs}h</div>
-        <div style="font-size:12px;color:#52525B;margin-top:6px;">automated this week</div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#3F3F46;margin-bottom:10px;">Total Tracked</div>
+        <div style="font-size:42px;font-weight:800;color:#FFFFFF;letter-spacing:-2px;line-height:1;">{total}</div>
+        <div style="font-size:12px;color:#52525B;margin-top:6px;">programs in database</div>
       </div>
     </div>
     """, unsafe_allow_html=True)
@@ -369,19 +369,19 @@ with tab1:
         </div>
         <div style="border-left:1px solid rgba(255,255,255,0.06);padding-left:32px;">
           <div style="margin-bottom:22px;">
-            <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#3F3F46;margin-bottom:8px;">Estimated effort</div>
-            <div style="font-size:28px;font-weight:800;color:#FFFFFF;letter-spacing:-1px;">3–5 hours</div>
-            <div style="font-size:12px;color:#52525B;margin-top:2px;">for Affiliate Manager this week</div>
+            <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#3F3F46;margin-bottom:8px;">High Priority Programs</div>
+            <div style="font-size:28px;font-weight:800;color:#A78BFA;letter-spacing:-1px;">{opps}</div>
+            <div style="font-size:12px;color:#52525B;margin-top:2px;">identified for review</div>
           </div>
           <div style="margin-bottom:22px;">
-            <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#3F3F46;margin-bottom:8px;">Potential upside</div>
-            <div style="font-size:28px;font-weight:800;color:#22C55E;letter-spacing:-1px;">2–3</div>
-            <div style="font-size:12px;color:#52525B;margin-top:2px;">qualified affiliate partnerships</div>
+            <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#3F3F46;margin-bottom:8px;">Require Verification</div>
+            <div style="font-size:28px;font-weight:800;color:#F59E0B;letter-spacing:-1px;">{to_ver}</div>
+            <div style="font-size:12px;color:#52525B;margin-top:2px;">license or terms incomplete</div>
           </div>
           <div>
-            <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#3F3F46;margin-bottom:8px;">Risk avoided</div>
+            <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#3F3F46;margin-bottom:8px;">High Risk Programs</div>
             <div style="font-size:28px;font-weight:800;color:#EF4444;letter-spacing:-1px;">{crit_risk}</div>
-            <div style="font-size:12px;color:#52525B;margin-top:2px;">low-quality or risky partnerships</div>
+            <div style="font-size:12px;color:#52525B;margin-top:2px;">excluded from outreach</div>
           </div>
         </div>
       </div>
@@ -817,13 +817,13 @@ with tab3:
               font-size:13px;color:#A1A1AA;">→ {rec}</div>""", unsafe_allow_html=True)
 
     # Business Impact
-    st.markdown('<br><div class="sec-label">Business Impact</div>', unsafe_allow_html=True)
+    st.markdown('<br><div class="sec-label">This Week at a Glance</div>', unsafe_allow_html=True)
     bi_items = [
-        ("Potential partnerships identified", str(opps), "#A78BFA"),
-        ("Qualified for immediate review", str(qual_review), "#22C55E"),
-        ("High-risk programs blocked", str(high_risk_n), "#EF4444"),
-        ("Estimated research time saved", f"{hrs}h", "#22C55E"),
-        ("Next recommended review", "Monday 09:00", "#52525B"),
+        ("High Priority Programs", str(opps), "#A78BFA"),
+        ("Requiring Verification", str(to_ver), "#F59E0B"),
+        ("High Risk — Excluded", str(high_risk_n), "#EF4444"),
+        ("Verified in Database", str(len(ver_wk)), "#22C55E"),
+        ("Next Review", "Monday 09:00", "#52525B"),
     ]
     bi_cols = st.columns(5)
     for i,(label,val,color) in enumerate(bi_items):
@@ -833,6 +833,41 @@ with tab3:
               <div style="font-size:24px;font-weight:800;color:{color};letter-spacing:-.5px;margin-bottom:6px;">{val}</div>
               <div style="font-size:11px;color:#3F3F46;line-height:1.4;">{label}</div>
             </div>""", unsafe_allow_html=True)
+
+    # Next Steps
+    st.markdown('<br><div class="sec-label">Next Steps — Connecting Real Sources</div>', unsafe_allow_html=True)
+    st.markdown(f"""
+    <div style="background:#0C0C0F;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:28px 32px;">
+      <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:40px;align-items:start;">
+        <div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+            color:#3F3F46;margin-bottom:6px;">MVP Prototype · Built in 48 hours · Budget &lt;$200</div>
+          <div style="font-size:16px;font-weight:600;color:#FFFFFF;margin-bottom:12px;letter-spacing:-.2px;">
+            This platform validates the monitoring logic.<br>
+            <span style="color:#A78BFA;">Next step: connect live data sources.</span>
+          </div>
+          <div style="font-size:13px;color:#71717A;line-height:1.7;">
+            The current version uses a structured mock database to demonstrate the intelligence workflow —
+            detection, scoring, alerting, and reporting. All logic is production-ready.
+            Connecting real sources requires scraping setup and scheduled automation, estimated 2–3 days of engineering work.
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+            color:#3F3F46;margin-bottom:14px;">Integration Roadmap</div>
+          {"".join([f'<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><span style="width:5px;height:5px;border-radius:50%;background:#7C3AED;display:inline-block;flex-shrink:0;"></span><div style="font-size:13px;color:#A1A1AA;">{s}</div></div>' for s in [
+            "AffPapa API / structured scraping",
+            "GPWA forum monitoring",
+            "AffiliateFix thread detection",
+            "SBC News RSS feed integration",
+            "EGR Global new listing alerts",
+            "Daily Cloudflare cron jobs",
+            "Slack or email digest delivery",
+          ]])}
+        </div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     st.markdown('<br><div class="sec-label">Export</div>', unsafe_allow_html=True)
     ex1,ex2,_ = st.columns([1,1,2])
