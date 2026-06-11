@@ -478,24 +478,11 @@ if source_filter != "All":
 st.markdown(f"<div style='font-size:12px; color:#6b6b80; margin-bottom:8px;'>Showing {len(filtered)} of {len(df)} programs</div>", unsafe_allow_html=True)
 
 st.table(filtered.reset_index(drop=True))
-    filtered.reset_index(drop=True),
-    use_container_width=True,
-    height=420,
-    column_config={
-        "Name": st.column_config.TextColumn("Program", width="medium"),
-        "Date Detected": st.column_config.DateColumn("Detected", format="DD MMM YYYY"),
-        "Affiliate URL": st.column_config.LinkColumn("URL"),
-        "Status": st.column_config.TextColumn("Status"),
-        "Priority": st.column_config.TextColumn("Priority"),
-    },
-    hide_index=True,
-)
-
 
 # ── Monitoring Sources ────────────────────────────────────────────────────────
 st.markdown('<div class="section-title">Monitoring Sources</div>', unsafe_allow_html=True)
 sources_df = pd.DataFrame(SOURCES)
-st.dataframe(sources_df, use_container_width=True, hide_index=True, height=320)
+st.table(sources_df)
 
 
 # ── Alert Examples ────────────────────────────────────────────────────────────
