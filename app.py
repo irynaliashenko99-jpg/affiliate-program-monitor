@@ -8,545 +8,149 @@ import math
 
 st.set_page_config(
     page_title="Affiliate Intelligence Platform",
-    page_icon="📡",
+    page_icon="◈",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-/* ── RESET & BASE ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 
-html, body, [class*="css"], .stApp {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
-  background: #0A0A0A !important;
-  color: #FFFFFF !important;
+html,body,[class*="css"],.stApp{
+  font-family:'Inter',system-ui,sans-serif!important;
+  background:#050505!important;
+  color:#FFFFFF!important;
 }
+[data-testid="stAppViewContainer"]{background:#050505!important;}
+[data-testid="stHeader"]{background:#050505!important;border-bottom:1px solid rgba(255,255,255,0.04);}
+.block-container{padding:2rem 2.5rem 5rem!important;max-width:1440px!important;}
+#MainMenu,footer,[data-testid="stDecoration"],[data-testid="stToolbar"]{display:none!important;visibility:hidden!important;}
+section[data-testid="stSidebar"]{display:none!important;}
 
-[data-testid="stAppViewContainer"] { background: #0A0A0A !important; }
-[data-testid="stHeader"] { background: #0A0A0A !important; border-bottom: 1px solid rgba(255,255,255,0.06); }
-[data-testid="stToolbar"] { display: none; }
-.block-container { padding: 2rem 2.5rem 4rem !important; max-width: 1400px !important; }
-section[data-testid="stSidebar"] { display: none; }
+/* TABS */
+.stTabs [data-baseweb="tab-list"]{
+  background:#0B0B0B!important;
+  border:1px solid rgba(255,255,255,0.05)!important;
+  border-radius:10px!important;
+  padding:4px!important;
+  gap:2px!important;
+}
+.stTabs [data-baseweb="tab-highlight"]{display:none!important;}
+[data-testid="stTabs"] button{
+  background:transparent!important;color:#52525B!important;
+  border:none!important;border-radius:7px!important;
+  font-size:13px!important;font-weight:500!important;
+  padding:8px 18px!important;transition:all .2s!important;
+}
+[data-testid="stTabs"] button[aria-selected="true"]{
+  background:rgba(139,92,246,0.12)!important;
+  color:#A78BFA!important;
+  border:1px solid rgba(139,92,246,0.2)!important;
+}
+[data-testid="stTabs"] button:hover{color:#FFFFFF!important;background:rgba(255,255,255,0.04)!important;}
+[data-testid="stTabsContent"]{padding-top:28px!important;}
 
-/* ── HIDE STREAMLIT CHROME ── */
-#MainMenu, footer, header { visibility: hidden; }
-[data-testid="stDecoration"] { display: none; }
+/* METRICS */
+[data-testid="metric-container"]{
+  background:#0B0B0B!important;
+  border:1px solid rgba(255,255,255,0.06)!important;
+  border-radius:12px!important;padding:18px 20px!important;
+}
+[data-testid="stMetricLabel"]{color:#52525B!important;font-size:10px!important;font-weight:600!important;text-transform:uppercase;letter-spacing:.1em;}
+[data-testid="stMetricValue"]{color:#FFFFFF!important;font-size:26px!important;font-weight:700!important;letter-spacing:-.5px;}
+[data-testid="stMetricDelta"]>div{font-size:11px!important;}
 
-/* ── TABS ── */
-[data-testid="stTabs"] button {
-  background: transparent !important;
-  color: #A1A1AA !important;
-  border: none !important;
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  padding: 10px 20px !important;
-  border-radius: 8px !important;
-  transition: all 0.2s !important;
+/* BUTTONS */
+.stButton>button{
+  background:linear-gradient(135deg,#7C3AED,#6D28D9)!important;
+  color:#FFF!important;border:none!important;border-radius:8px!important;
+  padding:10px 22px!important;font-size:13px!important;font-weight:500!important;
+  box-shadow:0 0 24px rgba(124,58,237,.25)!important;transition:all .2s!important;
 }
-[data-testid="stTabs"] button[aria-selected="true"] {
-  background: rgba(124,58,237,0.15) !important;
-  color: #A78BFA !important;
-  border: 1px solid rgba(124,58,237,0.3) !important;
-}
-[data-testid="stTabs"] button:hover { color: #FFFFFF !important; background: rgba(255,255,255,0.05) !important; }
-[data-testid="stTabsContent"] { padding-top: 24px !important; }
-.stTabs [data-baseweb="tab-list"] {
-  background: #111111 !important;
-  border: 1px solid rgba(255,255,255,0.06) !important;
-  border-radius: 10px !important;
-  padding: 4px !important;
-  gap: 4px !important;
-}
-.stTabs [data-baseweb="tab-highlight"] { display: none !important; }
+.stButton>button:hover{box-shadow:0 0 40px rgba(124,58,237,.45)!important;transform:translateY(-1px)!important;}
 
-/* ── METRICS ── */
-[data-testid="metric-container"] {
-  background: #111111 !important;
-  border: 1px solid rgba(255,255,255,0.08) !important;
-  border-radius: 12px !important;
-  padding: 20px !important;
-  backdrop-filter: blur(12px);
-  transition: border-color 0.2s, transform 0.2s;
+/* INPUTS */
+[data-testid="stTextInput"] input{
+  background:#0B0B0B!important;border:1px solid rgba(255,255,255,0.08)!important;
+  border-radius:8px!important;color:#FFF!important;font-size:13px!important;
 }
-[data-testid="metric-container"]:hover {
-  border-color: rgba(124,58,237,0.3) !important;
-  transform: translateY(-1px);
-}
-[data-testid="stMetricLabel"] { color: #A1A1AA !important; font-size: 11px !important; font-weight: 500 !important; text-transform: uppercase; letter-spacing: 0.08em; }
-[data-testid="stMetricValue"] { color: #FFFFFF !important; font-size: 28px !important; font-weight: 700 !important; letter-spacing: -0.5px; }
-[data-testid="stMetricDelta"] > div { font-size: 12px !important; }
-
-/* ── BUTTONS ── */
-.stButton > button {
-  background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%) !important;
-  color: #FFFFFF !important;
-  border: none !important;
-  border-radius: 8px !important;
-  padding: 10px 24px !important;
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  font-family: 'Inter', sans-serif !important;
-  box-shadow: 0 0 20px rgba(124,58,237,0.3) !important;
-  transition: all 0.2s !important;
-}
-.stButton > button:hover {
-  box-shadow: 0 0 32px rgba(124,58,237,0.5) !important;
-  transform: translateY(-1px) !important;
+[data-testid="stTextInput"] input:focus{border-color:rgba(139,92,246,.4)!important;}
+[data-testid="stTextInput"] input::placeholder{color:#3F3F46!important;}
+[data-testid="stSelectbox"]>div>div{
+  background:#0B0B0B!important;border:1px solid rgba(255,255,255,0.08)!important;
+  border-radius:8px!important;color:#FFF!important;
 }
 
-/* ── INPUTS ── */
-[data-testid="stTextInput"] input {
-  background: #111111 !important;
-  border: 1px solid rgba(255,255,255,0.1) !important;
-  border-radius: 8px !important;
-  color: #FFFFFF !important;
-  font-size: 14px !important;
-  padding: 10px 14px !important;
+/* DOWNLOAD BUTTON */
+[data-testid="stDownloadButton"] button{
+  background:rgba(255,255,255,0.04)!important;color:#71717A!important;
+  border:1px solid rgba(255,255,255,0.07)!important;border-radius:8px!important;
+  font-size:12px!important;box-shadow:none!important;
 }
-[data-testid="stTextInput"] input:focus { border-color: rgba(124,58,237,0.5) !important; outline: none !important; }
-[data-testid="stTextInput"] input::placeholder { color: #4B4B5A !important; }
+[data-testid="stDownloadButton"] button:hover{background:rgba(255,255,255,0.07)!important;color:#FFF!important;box-shadow:none!important;transform:none!important;}
 
-/* ── SELECTBOX ── */
-[data-testid="stSelectbox"] > div > div {
-  background: #111111 !important;
-  border: 1px solid rgba(255,255,255,0.1) !important;
-  border-radius: 8px !important;
-  color: #FFFFFF !important;
-}
+/* SUCCESS/INFO */
+[data-testid="stSuccess"]{background:rgba(34,197,94,.08)!important;border:1px solid rgba(34,197,94,.2)!important;border-radius:10px!important;color:#22C55E!important;}
+[data-testid="stInfo"]{background:rgba(139,92,246,.08)!important;border:1px solid rgba(139,92,246,.2)!important;border-radius:10px!important;}
 
-/* ── DATAFRAME ── */
-[data-testid="stDataFrame"] {
-  border: 1px solid rgba(255,255,255,0.08) !important;
-  border-radius: 12px !important;
-  overflow: hidden !important;
-}
-.dvn-scroller { background: #111111 !important; }
-[data-testid="stDataFrame"] th {
-  background: #1A1A1A !important;
-  color: #A1A1AA !important;
-  font-size: 11px !important;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-[data-testid="stDataFrame"] td { color: #E4E4E7 !important; font-size: 13px !important; }
+/* SECTION DIVIDER */
+.sec{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#3F3F46;
+  margin:40px 0 18px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.04);
+  display:flex;align-items:center;gap:8px;}
+.sec::before{content:'';display:inline-block;width:2px;height:11px;background:#7C3AED;border-radius:2px;}
 
-/* ── DOWNLOAD BUTTON ── */
-[data-testid="stDownloadButton"] button {
-  background: rgba(255,255,255,0.05) !important;
-  color: #A1A1AA !important;
-  border: 1px solid rgba(255,255,255,0.1) !important;
-  border-radius: 8px !important;
-  font-size: 13px !important;
-  font-weight: 400 !important;
-  box-shadow: none !important;
-}
-[data-testid="stDownloadButton"] button:hover {
-  background: rgba(255,255,255,0.08) !important;
-  color: #FFFFFF !important;
-  box-shadow: none !important;
-  transform: none !important;
-}
-
-/* ── SPINNER ── */
-[data-testid="stSpinner"] { color: #7C3AED !important; }
-
-/* ── SUCCESS ── */
-[data-testid="stSuccess"] {
-  background: rgba(34,197,94,0.1) !important;
-  border: 1px solid rgba(34,197,94,0.3) !important;
-  border-radius: 10px !important;
-  color: #22C55E !important;
-}
-
-/* ── SECTION TITLE ── */
-.section-title {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #52525B;
-  margin: 36px 0 16px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.section-title::before {
-  content: '';
-  display: inline-block;
-  width: 3px;
-  height: 12px;
-  background: #7C3AED;
-  border-radius: 2px;
-}
-
-/* ── HERO ── */
-.hero-wrap {
-  background: #111111;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 16px;
-  padding: 28px 36px;
-  margin-bottom: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-  overflow: hidden;
-}
-.hero-wrap::before {
-  content: '';
-  position: absolute;
-  top: -60px; right: -60px;
-  width: 200px; height: 200px;
-  background: radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%);
-  pointer-events: none;
-}
-.hero-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: #FFFFFF;
-  letter-spacing: -0.5px;
-  margin-bottom: 6px;
-}
-.hero-sub { font-size: 14px; color: #71717A; }
-.live-badge {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  background: rgba(34,197,94,0.08);
-  border: 1px solid rgba(34,197,94,0.2);
-  border-radius: 20px;
-  padding: 5px 14px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #22C55E;
-  margin-bottom: 6px;
-}
-.live-pulse {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: #22C55E;
-  box-shadow: 0 0 6px #22C55E;
-  animation: livepulse 1.8s ease-in-out infinite;
-}
-@keyframes livepulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
-.last-scan-lbl { font-size: 11px; color: #52525B; text-align: right; }
-
-/* ── EXEC SUMMARY CARDS ── */
-.exec-card {
-  background: #111111;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 14px;
-  padding: 22px 24px;
-  position: relative;
-  overflow: hidden;
-  transition: border-color 0.2s, transform 0.2s;
-}
-.exec-card:hover { border-color: rgba(124,58,237,0.25); transform: translateY(-2px); }
-.exec-card-icon { font-size: 20px; margin-bottom: 12px; }
-.exec-card-val { font-size: 36px; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 4px; }
-.exec-card-label { font-size: 12px; color: #71717A; font-weight: 500; }
-.exec-card-trend { position: absolute; top: 20px; right: 20px; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 5px; }
-.trend-up { background: rgba(34,197,94,0.12); color: #22C55E; }
-.trend-warn { background: rgba(245,158,11,0.12); color: #F59E0B; }
-.trend-danger { background: rgba(239,68,68,0.12); color: #EF4444; }
-
-/* ── SCAN ENGINE ── */
-.scan-engine-card {
-  background: #111111;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 14px;
-  padding: 24px 28px;
-}
-.scan-engine-title { font-size: 16px; font-weight: 600; color: #FFFFFF; margin-bottom: 4px; }
-.scan-engine-sub { font-size: 13px; color: #71717A; margin-bottom: 20px; }
-.log-box {
-  background: #0D0D0D;
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 8px;
-  padding: 16px;
-  font-family: 'Courier New', monospace;
-  font-size: 12px;
-  line-height: 1.9;
-  color: #22C55E;
-  margin-top: 16px;
-}
-
-/* ── HIGH PRIORITY TABLE ── */
-.priority-card {
-  background: #111111;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 12px;
-  padding: 16px 18px;
-  margin-bottom: 8px;
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
-  align-items: center;
-  gap: 12px;
-  transition: background 0.15s;
-}
-.priority-card:hover { background: rgba(255,255,255,0.03); }
-.priority-name { font-weight: 600; font-size: 14px; color: #FFFFFF; }
-.priority-source { font-size: 12px; color: #71717A; }
-.badge {
-  display: inline-block;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 20px;
-  white-space: nowrap;
-}
-.badge-new { background: rgba(124,58,237,0.15); color: #A78BFA; border: 1px solid rgba(124,58,237,0.25); }
-.badge-verify { background: rgba(245,158,11,0.12); color: #F59E0B; border: 1px solid rgba(245,158,11,0.2); }
-.badge-verified { background: rgba(34,197,94,0.1); color: #22C55E; border: 1px solid rgba(34,197,94,0.2); }
-.badge-rejected { background: rgba(239,68,68,0.1); color: #EF4444; border: 1px solid rgba(239,68,68,0.2); }
-.risk-high { color: #EF4444; font-size: 12px; font-weight: 600; }
-.risk-med { color: #F59E0B; font-size: 12px; font-weight: 600; }
-.risk-low { color: #22C55E; font-size: 12px; font-weight: 600; }
-
-/* ── SOURCE CARDS ── */
-.source-card {
-  background: #111111;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 12px;
-  padding: 18px 20px;
-  transition: border-color 0.2s;
-}
-.source-card:hover { border-color: rgba(124,58,237,0.3); }
-.source-name { font-size: 14px; font-weight: 600; color: #FFFFFF; margin-bottom: 4px; }
-.source-type { font-size: 11px; color: #52525B; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
-.source-row { font-size: 12px; color: #71717A; margin-bottom: 3px; }
-.source-row span { color: #A1A1AA; }
-
-/* ── ALERT CARDS ── */
-.alert-card {
-  border-radius: 12px;
-  padding: 20px 22px;
-  margin-bottom: 12px;
-  position: relative;
-  overflow: hidden;
-}
-.alert-card-purple { background: rgba(124,58,237,0.08); border: 1px solid rgba(124,58,237,0.2); }
-.alert-card-amber { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); }
-.alert-card-red { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); }
-.alert-icon { font-size: 20px; margin-bottom: 10px; }
-.alert-title { font-size: 14px; font-weight: 700; color: #FFFFFF; margin-bottom: 10px; }
-.alert-row { font-size: 13px; color: #71717A; margin-bottom: 4px; }
-.alert-row strong { color: #D4D4D8; }
-.alert-action { font-size: 13px; font-weight: 500; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); }
-.action-purple { color: #A78BFA; }
-.action-amber { color: #F59E0B; }
-.action-red { color: #EF4444; }
-
-/* ── DIGEST ── */
-.digest-hero {
-  background: linear-gradient(135deg, rgba(124,58,237,0.1) 0%, rgba(109,40,217,0.05) 100%);
-  border: 1px solid rgba(124,58,237,0.2);
-  border-radius: 16px;
-  padding: 28px 32px;
-  margin-bottom: 24px;
-}
-.digest-title { font-size: 20px; font-weight: 700; color: #FFFFFF; margin-bottom: 4px; }
-.digest-sub { font-size: 13px; color: #71717A; }
-
-.savings-bar {
-  background: rgba(34,197,94,0.06);
-  border: 1px solid rgba(34,197,94,0.15);
-  border-radius: 12px;
-  padding: 18px 24px;
-  display: flex;
-  gap: 48px;
-  align-items: center;
-  margin-bottom: 24px;
-}
-.savings-item-val { font-size: 28px; font-weight: 800; color: #22C55E; letter-spacing: -1px; }
-.savings-item-lbl { font-size: 11px; color: #52525B; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
-
-.digest-opp-card {
-  background: #111111;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 12px;
-  padding: 18px 22px;
-  margin-bottom: 10px;
-  transition: border-color 0.2s;
-}
-.digest-opp-card:hover { border-color: rgba(124,58,237,0.25); }
-.digest-opp-name { font-size: 15px; font-weight: 600; color: #FFFFFF; margin-bottom: 8px; }
-.digest-opp-row { font-size: 13px; color: #71717A; margin-bottom: 3px; }
-.digest-opp-row strong { color: #A1A1AA; }
-
-.risk-flag-card {
-  background: rgba(239,68,68,0.06);
-  border: 1px solid rgba(239,68,68,0.15);
-  border-radius: 10px;
-  padding: 14px 18px;
-  margin-bottom: 8px;
-  font-size: 13px;
-  color: #FCA5A5;
-}
-.rec-card {
-  background: rgba(34,197,94,0.05);
-  border: 1px solid rgba(34,197,94,0.12);
-  border-radius: 10px;
-  padding: 14px 18px;
-  margin-bottom: 8px;
-  font-size: 13px;
-  color: #86EFAC;
-}
-
-/* ── STEP ITEMS ── */
-.step-item {
-  background: #111111;
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 10px;
-  padding: 16px 20px;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-}
-.step-num {
-  background: rgba(124,58,237,0.15);
-  color: #A78BFA;
-  font-weight: 700;
-  font-size: 11px;
-  padding: 4px 9px;
-  border-radius: 5px;
-  min-width: 34px;
-  text-align: center;
-}
-.step-title { font-weight: 600; color: #FFFFFF; font-size: 14px; margin-bottom: 2px; }
-.step-desc { font-size: 13px; color: #71717A; }
-
-/* ── TABLE HEADER ── */
-.tbl-header {
-  background: #111111;
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 10px;
-  padding: 14px 18px;
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
-  gap: 12px;
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #52525B;
-  margin-bottom: 6px;
-}
-
-/* ── FOOTER ── */
-.app-footer {
-  margin-top: 60px;
-  padding: 24px 0;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.footer-left { font-size: 12px; color: #3F3F46; }
-.footer-right { display: flex; gap: 20px; }
-.footer-badge {
-  font-size: 11px;
-  color: #52525B;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.07);
-  padding: 4px 10px;
-  border-radius: 5px;
-}
-
-/* ── PAGINATION ── */
-.page-info { font-size: 13px; color: #71717A; padding: 8px 0; }
-
-hr { border-color: rgba(255,255,255,0.06) !important; }
+hr{border-color:rgba(255,255,255,0.05)!important;}
 </style>
 """, unsafe_allow_html=True)
 
 
-# ════════════════════════ DATA ════════════════════════
+# ══════════════════════════════════════════
+# DATA
+# ══════════════════════════════════════════
 PROGRAM_NAMES = [
     "Bet365 Partners","888 Affiliates","LeoVegas Affiliates","Income Access Network",
     "Rizk Partners","Stake Affiliates","PlayAmo Partners","Fortune Affiliates",
     "Betsson Group Affiliates","22Bet Partners","Betwinner Affiliates","Coldbet Partners",
     "FoxSlots Partners","Rocketpot Affiliates","Bwin Affiliates","William Hill Partners",
     "Unibet Affiliates","PokerStars Affiliates","Betway Partners","Mr Green Affiliates",
-    "Casumo Affiliates","Videoslots Partners","Casiplay Affiliates","Fastpay Partners",
-    "N1 Partners","Slotty Vegas Affiliates","Wildz Affiliates","Dunder Affiliates",
-    "CasinoRoom Partners","Kaboo Affiliates","Genesis Affiliates","OVO Casino Partners",
-    "Vera&John Affiliates","Guts Affiliates","Betsafe Partners","NordicBet Affiliates",
-    "Expekt Affiliates","Jetbull Partners","EasyBet Partners","SpinBet Affiliates",
-    "MegaSlot Affiliates","CryptoLuck Partners","LuckyNova Partners","GrandWin Affiliates",
-    "SilverPlay Partners","Winolot Affiliates","Casinado Partners","Odds96 Partners",
-    "C24 Partners","Boomerang Partners","Partners1xbet","Parimatch Partners",
-    "Mostbet Affiliates","Melbet Partners","PinUp Partners","1win Affiliates",
-    "GGBet Partners","Vulkan Bet Affiliates","ICE Casino Partners","BC.Game Affiliates",
-    "BitStarz Partners","FortuneJack Affiliates","mBit Partners","BetFury Affiliates",
-    "CloudBet Partners","CryptoGames Partners","Rollbit Affiliates","Shuffle Affiliates",
-    "JackBit Partners","NineCasino Affiliates","Vave Affiliates","Sportsbet.io Partners",
-    "Rabona Affiliates","Oshi Affiliates","BetChain Partners","1xSlots Affiliates",
-    "BetAndreas Partners","Sportaza Affiliates","Haz Casino Partners","20Bet Affiliates",
-    "Playfina Affiliates","Legzo Partners","Turbo Casino Affiliates","Fresh Casino Partners",
-    "Sol Casino Partners","Izzi Casino Affiliates","Cat Casino Partners","Gama Affiliates",
-    "Selector Casino Partners","Brillx Affiliates","Riobet Partners","JVSpin Affiliates",
-    "DrBet Partners","SpinAway Affiliates","Mystake Partners","Paripesa Affiliates",
-    "MozzartBet Affiliates","Betmaster Partners","Betano Affiliates","Novibet Partners",
-    "NetBet Partners","10Bet Affiliates","GalaBingo Affiliates","Tombola Partners",
-    "BetVictor Affiliates","Coral Partners","Ladbrokes Affiliates","Paddy Power Partners",
-    "Sky Bet Affiliates","Betfair Affiliates","Smarkets Partners","STS Affiliates",
-    "Fortuna Partners","Tipsport Affiliates","Synot Affiliates","Tipico Partners",
-    "Bettilt Affiliates","Betpas Partners","Mariobet Affiliates","Ngsbahis Partners",
-    "Hilbet Partners","Piabet Affiliates","Goldenbahis Partners","Bahsegel Affiliates",
-    "Casinomaxi Partners","Vdcasino Affiliates","Mobilbahis Partners","Superbahis Affiliates",
-    "Tempobet Partners","Betboo Affiliates","Pragmatic Partners","Push Gaming Affiliates",
-    "Nolimit City Affiliates","Yggdrasil Partners","Thunderkick Affiliates","ELK Studios Partners",
-    "Quickspin Affiliates","Microgaming Partners","NetEnt Affiliates","Play n GO Partners",
-    "Red Tiger Affiliates","Evolution Partners","Playtech Affiliates","NextGen Partners",
-    "Betcris Affiliates","Coolbet Partners","NorgesBet Affiliates","Grosvenor Partners",
-    "Sky Vegas Affiliates","Betdaq Affiliates","Colossus Bets Partners","BetConnect Affiliates",
-    "Spreadex Affiliates","BoyleSports Partners","Quinnbet Affiliates","LiveScore Partners",
-    "Midnite Affiliates","Fansbet Affiliates","Rootz Affiliates","White Hat Gaming Affiliates",
-    "ProgressPlay Partners","Nektan Affiliates","Cozy Games Partners","Relax Gaming Affiliates",
-    "Pariplay Partners","Jumpman Partners","MrQ Partners","SpinGenie Affiliates",
-    "Slingo Partners","Aspers Affiliates","Buzz Bingo Partners","Mecca Bingo Affiliates",
-    "Jackpotjoy Partners","Heart Bingo Affiliates","Foxy Games Partners","Virgin Games Affiliates",
-    "888Ladies Partners","Moon Games Affiliates","OddsMonkey Affiliates","Profit Accumulator Affiliates",
-    "Pinnacle Affiliates","Betcris Partners","Betsson UA Affiliates","Fonbet Affiliates",
-    "Liga Stavok Partners","Winline Affiliates","Leon Bet Partners","Marathonbet Affiliates",
-    "Pari Affiliates","BetCity Partners","Olimp Affiliates","1xBet Partners",
-    "Bwin UA Affiliates","Parimatch UA Partners","Favbet Affiliates","Vbet Partners",
-    "FanSport Affiliates","BetMGM Affiliates","DraftKings Partners","FanDuel Affiliates",
-    "Caesars Affiliates","PointsBet Partners","WynnBet Affiliates","Barstool Partners",
-    "theScore Affiliates","Fox Bet Partners","BallyBet Affiliates","Golden Nugget Partners",
-    "Hard Rock Affiliates","Rivers Casino Partners","Rush Street Partners","SugarHouse Affiliates",
-    "ESPN Bet Affiliates","Tipwin Partners","Sportingbet Affiliates","Winner Affiliates",
-    "Interwetten Partners","Eurobet Affiliates","Snai Partners","Lottomatica Affiliates",
-    "Sisal Partners","Planetwin Affiliates","Better Partners","Betclic Partners",
-    "Winamax Affiliates","PMU Partners","France Pari Affiliates","NetBet FR Partners",
-    "JOA Partners","Barriere Affiliates","Partouche Partners","Ladbrokes BE Affiliates",
-    "Circus Partners","Napoleon Games Affiliates","Betfirst Partners","Golden Palace Affiliates",
-    "Unibet BE Partners","Viggoslots Affiliates","Catena Media Partners","Better Collective Affiliates",
-    "XLMedia Partners","Raketech Affiliates","Gambling.com Partners","AskGamblers Affiliates",
-    "CasinoGuru Partners","Slotegrator Affiliates","SoftSwiss Partners","BGaming Affiliates",
-    "Spinomenal Partners","KA Gaming Affiliates","Hacksaw Gaming Partners","Avatar UX Partners",
-    "Kalamba Games Affiliates","Triple Edge Partners","1spin4win Affiliates","Gamomat Partners",
-    "Nolimit Partners","ReelPlay Affiliates","Stakelogic Partners","Booongo Affiliates",
-    "Endorphina Partners","Wazdan Affiliates","Elk Studios Partners","Thunderspin Affiliates",
-    "Betsoft Partners","Habanero Affiliates","GameArt Partners","PG Soft Affiliates",
-    "Spadegaming Partners","CQ9 Affiliates","JDB Affiliates","FC Affiliates",
+    "Casumo Affiliates","Videoslots Partners","Fastpay Partners","N1 Partners",
+    "Wildz Affiliates","Dunder Affiliates","CasinoRoom Partners","Genesis Affiliates",
+    "Vera John Affiliates","Guts Affiliates","Betsafe Partners","NordicBet Affiliates",
+    "SpinBet Affiliates","MegaSlot Affiliates","CryptoLuck Partners","LuckyNova Partners",
+    "GrandWin Affiliates","SilverPlay Partners","Odds96 Partners","C24 Partners",
+    "Boomerang Partners","Partners1xbet","Parimatch Partners","Mostbet Affiliates",
+    "Melbet Partners","PinUp Partners","1win Affiliates","GGBet Partners",
+    "BC.Game Affiliates","BitStarz Partners","FortuneJack Affiliates","BetFury Affiliates",
+    "CloudBet Partners","Rollbit Affiliates","JackBit Partners","NineCasino Affiliates",
+    "Sportsbet.io Partners","Rabona Affiliates","BetChain Partners","1xSlots Affiliates",
+    "Sportaza Affiliates","Haz Casino Partners","20Bet Affiliates","Playfina Affiliates",
+    "Legzo Partners","Sol Casino Partners","Cat Casino Partners","Gama Affiliates",
+    "JVSpin Affiliates","DrBet Partners","Mystake Partners","Paripesa Affiliates",
+    "Betano Affiliates","Novibet Partners","NetBet Partners","BetVictor Affiliates",
+    "Betfair Affiliates","Smarkets Partners","Fortuna Partners","Tipsport Affiliates",
+    "Tipico Partners","Bettilt Affiliates","Betcris Affiliates","Coolbet Partners",
+    "LiveScore Partners","Midnite Affiliates","Rootz Affiliates","MrQ Partners",
+    "SpinGenie Affiliates","Jackpotjoy Partners","Virgin Games Affiliates","Pinnacle Affiliates",
+    "1xBet Partners","Parimatch UA Partners","Favbet Affiliates","Vbet Partners",
+    "BetMGM Affiliates","DraftKings Partners","FanDuel Affiliates","Caesars Affiliates",
+    "PointsBet Partners","ESPN Bet Affiliates","Betclic Partners","Winamax Affiliates",
+    "Better Collective Affiliates","Catena Media Partners","Raketech Affiliates","CasinoGuru Partners",
+    "Hacksaw Gaming Partners","Push Gaming Affiliates","Evolution Partners","Playtech Affiliates",
+    "Pragmatic Partners","NetEnt Affiliates","Red Tiger Affiliates","BGaming Affiliates",
+    "Spinomenal Partners","KA Gaming Affiliates","Gamomat Partners","Wazdan Affiliates",
+    "Betsoft Partners","PG Soft Affiliates","Spadegaming Partners","1spin4win Affiliates",
 ]
 
 SOURCES_LIST = ["AffPapa","GPWA","Affiliate Guard Dog","AskGamblers","SBC News","Gambling Insider","Reddit","Trustpilot"]
 GEO_LIST = ["EU","UK","CA","AU","US","SE","DE","FI","NO","UA","CIS","LATAM","APAC","Tier 1","Worldwide"]
 LICENSE_LIST = ["MGA","UKGC","Curaçao","Gibraltar","Isle of Man","Kahnawake","Unknown"]
-STATUS_WEIGHTS = ["New","New","To Verify","To Verify","Verified","Verified","Verified","Verified","Verified","Rejected"]
-PRIORITY_LIST = ["High","High","Medium","Medium","Low"]
-COMMISSION_LIST = ["RevShare 25-40%","RevShare 30-45%","CPA $50-150","CPA $100-200","Hybrid","RevShare 20-35%","RevShare 35-50%"]
-NOTES_LIST = [
+STATUS_W = ["New","New","To Verify","To Verify","Verified","Verified","Verified","Verified","Verified","Rejected"]
+PRIORITY_L = ["High","High","Medium","Medium","Low"]
+COMMISSION_L = ["RevShare 25-40%","RevShare 30-45%","CPA $50-150","CPA $100-200","Hybrid","RevShare 20-35%","RevShare 35-50%"]
+NOTES_L = [
     "Verified program. Stable payouts.",
     "New listing — terms under review.",
     "Community-flagged for late payments.",
@@ -558,13 +162,33 @@ NOTES_LIST = [
     "Recently launched. License pending.",
     "Reputation confirmed. Recommended.",
     "Rapid growth in LATAM market.",
-    "Pending license renewal. Risk flag.",
+    "Pending license renewal.",
     "Top performer in Nordics.",
     "New management. Quality unclear.",
     "Strong affiliate community feedback.",
 ]
 TODAY = "2026-06-12"
 TODAY_DT = datetime(2026, 6, 12)
+
+def risk_score(row):
+    s = 10
+    if row["License"] == "Unknown": s += 40
+    if row["License"] == "Curaçao": s += 15
+    if row["Status"] == "Rejected": s += 35
+    if row["Status"] == "To Verify": s += 20
+    if "late payment" in row["Notes"].lower() or "risk" in row["Notes"].lower(): s += 20
+    if row["Priority"] == "High" and row["Status"] == "To Verify": s += 10
+    return min(s, 99)
+
+def opp_score(row):
+    s = 30
+    if row["Priority"] == "High": s += 30
+    if row["Status"] == "Verified": s += 25
+    if "Tier 1" in row["GEO"] or "Worldwide" in row["GEO"]: s += 10
+    if "RevShare" in row["Commission"] and "45" in row["Commission"]: s += 8
+    if "stable" in row["Notes"].lower() or "recommended" in row["Notes"].lower(): s += 10
+    if row["Status"] == "New" and row["Priority"] == "High": s += 5
+    return min(s, 99)
 
 def generate_programs(n=500):
     random.seed(42)
@@ -575,517 +199,574 @@ def generate_programs(n=500):
         elif i < 30: days_ago = random.randint(1, 7)
         else: days_ago = random.randint(1, 90)
         detected = (TODAY_DT - timedelta(days=days_ago)).strftime("%Y-%m-%d")
-        status = random.choice(STATUS_WEIGHTS)
+        status = random.choice(STATUS_W)
         if days_ago == 0: status = "New"
         elif days_ago <= 7: status = random.choice(["New","To Verify"])
-        geo_sample = random.sample(GEO_LIST, random.randint(1,3))
-        rows.append({
-            "Name": name,
-            "Date Detected": detected,
-            "Source": random.choice(SOURCES_LIST),
-            "GEO": ", ".join(geo_sample),
-            "License": random.choice(LICENSE_LIST),
-            "Commission": random.choice(COMMISSION_LIST),
+        geo = ", ".join(random.sample(GEO_LIST, random.randint(1,3)))
+        license_ = random.choice(LICENSE_LIST)
+        commission = random.choice(COMMISSION_L)
+        notes = random.choice(NOTES_L)
+        row = {
+            "Name": name, "Date Detected": detected,
+            "Source": random.choice(SOURCES_LIST), "GEO": geo,
+            "License": license_, "Commission": commission,
             "Affiliate URL": name.lower().replace(" ","").replace("'","").replace("&","and")+".com/affiliates",
-            "Status": status,
-            "Priority": random.choice(PRIORITY_LIST),
-            "Notes": random.choice(NOTES_LIST),
-        })
+            "Status": status, "Priority": random.choice(PRIORITY_L), "Notes": notes,
+        }
+        row["Risk Score"] = risk_score(row)
+        row["Opp Score"] = opp_score(row)
+        rows.append(row)
     return pd.DataFrame(rows)
 
 NEW_POOL = [
     {"Name":"SpinBet Affiliates","Source":"SBC News","GEO":"EU, UA","License":"Curaçao","Commission":"RevShare 45%","Affiliate URL":"spinbet-affiliates.com/affiliates","Status":"New","Priority":"High","Notes":"High RevShare. No track record yet."},
     {"Name":"LuckyNova Partners","Source":"Reddit","GEO":"UA, EU","License":"Unknown","Commission":"CPA $120","Affiliate URL":"luckynova.io/affiliates","Status":"To Verify","Priority":"High","Notes":"License unconfirmed. Verify before engagement."},
-    {"Name":"MegaSlot Affiliates","Source":"AffPapa","GEO":"EU, UA","License":"Curaçao","Commission":"Hybrid","Affiliate URL":"megaslot.io/affiliates","Status":"New","Priority":"Medium","Notes":"New launch. High bonus offers."},
-    {"Name":"CryptoNova Partners","Source":"GPWA","GEO":"Worldwide","License":"Unknown","Commission":"RevShare 30%","Affiliate URL":"cryptonova.gg/affiliates","Status":"To Verify","Priority":"Medium","Notes":"Crypto-native. Community buzz. License unclear."},
     {"Name":"NovaSpin Affiliates","Source":"Affiliate Guard Dog","GEO":"EU","License":"MGA","Commission":"RevShare 35%","Affiliate URL":"novaspin.com/affiliates","Status":"New","Priority":"High","Notes":"Early detection. Solid MGA license."},
-    {"Name":"StarAffiliates Network","Source":"SBC News","GEO":"Tier 1","License":"MGA","Commission":"RevShare 30-45%","Affiliate URL":"staraffiliates.com/partners","Status":"New","Priority":"High","Notes":"Announced at SBC Summit."},
+    {"Name":"StarNet Affiliates","Source":"SBC News","GEO":"Tier 1","License":"MGA","Commission":"RevShare 30-45%","Affiliate URL":"starnet.com/partners","Status":"New","Priority":"High","Notes":"Announced at SBC Summit. Strong team."},
     {"Name":"BetRocket Partners","Source":"AffPapa","GEO":"EU, CA","License":"Curaçao","Commission":"CPA $150","Affiliate URL":"betrocket.io/affiliates","Status":"To Verify","Priority":"Medium","Notes":"New CPA-focused program. Terms unclear."},
+    {"Name":"CryptoNova Partners","Source":"GPWA","GEO":"Worldwide","License":"Unknown","Commission":"RevShare 30%","Affiliate URL":"cryptonova.gg/affiliates","Status":"To Verify","Priority":"Medium","Notes":"Crypto-native. Community buzz. License unclear."},
 ]
 
-MONITORING_SOURCES = [
-    {"Source":"AffPapa","Type":"Affiliate Directory","Monitors":"New listings, terms changes","Frequency":"Daily","Priority":"High","Last Checked":"Today 09:00"},
-    {"Source":"GPWA","Type":"Affiliate Forum","Monitors":"Announcements, affiliate feedback","Frequency":"Daily","Priority":"High","Last Checked":"Today 09:01"},
-    {"Source":"Affiliate Guard Dog","Type":"Watchdog Forum","Monitors":"Rogue programs, payment issues","Frequency":"3x/week","Priority":"High","Last Checked":"Today 09:02"},
-    {"Source":"AskGamblers","Type":"Review Platform","Monitors":"New programs, complaints","Frequency":"Daily","Priority":"High","Last Checked":"Today 09:03"},
-    {"Source":"SBC News","Type":"Industry News","Monitors":"New launches, partnerships","Frequency":"Daily","Priority":"High","Last Checked":"Today 09:04"},
-    {"Source":"Gambling Insider","Type":"Industry News","Monitors":"Market launches, M&A","Frequency":"Daily","Priority":"Medium","Last Checked":"Today 09:05"},
-    {"Source":"Reddit","Type":"Community Forum","Monitors":"Community buzz, warnings","Frequency":"Daily","Priority":"Medium","Last Checked":"Today 09:06"},
-    {"Source":"Trustpilot","Type":"Review Platform","Monitors":"Reputation signals","Frequency":"Weekly","Priority":"Medium","Last Checked":"Jun 09"},
+MONITORING_SOURCES_DATA = [
+    {"name":"AffPapa","type":"Affiliate Directory","found_week":12,"reliability":94,"last":"Today 09:00","status":"Active"},
+    {"name":"GPWA","type":"Affiliate Forum","found_week":7,"reliability":89,"last":"Today 09:01","status":"Active"},
+    {"name":"Affiliate Guard Dog","type":"Watchdog Forum","found_week":5,"reliability":92,"last":"Today 09:02","status":"Active"},
+    {"name":"AskGamblers","type":"Review Platform","found_week":9,"reliability":87,"last":"Today 09:03","status":"Active"},
+    {"name":"SBC News","type":"Industry News","found_week":11,"reliability":96,"last":"Today 09:04","status":"Active"},
+    {"name":"Gambling Insider","type":"Industry News","found_week":6,"reliability":91,"last":"Today 09:05","status":"Active"},
+    {"name":"Reddit","type":"Community Forum","found_week":8,"reliability":72,"last":"Today 09:06","status":"Active"},
+    {"name":"Trustpilot","type":"Review Platform","found_week":3,"reliability":83,"last":"Jun 09","status":"Active"},
 ]
 
-SOURCE_ICONS = {"AffPapa":"🔗","GPWA":"📋","Affiliate Guard Dog":"🛡","AskGamblers":"🎰",
-                "SBC News":"📰","Gambling Insider":"📊","Reddit":"💬","Trustpilot":"⭐"}
-
-# ── Session state
 if "programs" not in st.session_state:
     st.session_state.programs = generate_programs(500)
-if "scan_log" not in st.session_state:
-    st.session_state.scan_log = []
-if "last_scan" not in st.session_state:
-    st.session_state.last_scan = None
-if "page" not in st.session_state:
-    st.session_state.page = 0
+    for p in NEW_POOL:
+        p["Risk Score"] = risk_score({"License":p["License"],"Status":p["Status"],"Notes":p["Notes"],"Priority":p["Priority"],"GEO":p["GEO"],"Commission":p["Commission"]})
+        p["Opp Score"] = opp_score({"Priority":p["Priority"],"Status":p["Status"],"GEO":p["GEO"],"Commission":p["Commission"],"Notes":p["Notes"]})
+if "scan_log" not in st.session_state: st.session_state.scan_log = []
+if "last_scan" not in st.session_state: st.session_state.last_scan = None
+if "db_page" not in st.session_state: st.session_state.db_page = 0
 
 
-# ════════════════════════ HERO ════════════════════════
-last_scan_text = st.session_state.last_scan.strftime("%d %b %Y, %H:%M") if st.session_state.last_scan else "12 Jun 2026, 09:00"
+# ══════════════════════════════════════════
+# HELPERS
+# ══════════════════════════════════════════
+def status_badge(s):
+    M = {
+        "New":       ("rgba(139,92,246,.15)","#A78BFA","rgba(139,92,246,.25)"),
+        "To Verify": ("rgba(245,158,11,.12)","#F59E0B","rgba(245,158,11,.2)"),
+        "Verified":  ("rgba(34,197,94,.1)","#22C55E","rgba(34,197,94,.2)"),
+        "Rejected":  ("rgba(239,68,68,.1)","#EF4444","rgba(239,68,68,.2)"),
+    }
+    bg,col,bdr = M.get(s, M["New"])
+    return f'<span style="display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;background:{bg};color:{col};border:1px solid {bdr};letter-spacing:.04em;">{s.upper()}</span>'
+
+def risk_badge(score):
+    if score >= 70: return f'<span style="color:#EF4444;font-weight:700;font-size:13px;">{score}<span style="color:#52525B;font-size:10px;font-weight:400;">/100</span></span>'
+    if score >= 40: return f'<span style="color:#F59E0B;font-weight:700;font-size:13px;">{score}<span style="color:#52525B;font-size:10px;font-weight:400;">/100</span></span>'
+    return f'<span style="color:#22C55E;font-weight:700;font-size:13px;">{score}<span style="color:#52525B;font-size:10px;font-weight:400;">/100</span></span>'
+
+def opp_badge(score):
+    if score >= 70: return f'<span style="color:#22C55E;font-weight:700;font-size:13px;">{score}<span style="color:#52525B;font-size:10px;font-weight:400;">/100</span></span>'
+    if score >= 40: return f'<span style="color:#F59E0B;font-weight:700;font-size:13px;">{score}<span style="color:#52525B;font-size:10px;font-weight:400;">/100</span></span>'
+    return f'<span style="color:#71717A;font-weight:700;font-size:13px;">{score}<span style="color:#52525B;font-size:10px;font-weight:400;">/100</span></span>'
+
+
+# ══════════════════════════════════════════
+# HERO
+# ══════════════════════════════════════════
+df = st.session_state.programs
+week_ago = (TODAY_DT - timedelta(days=7)).strftime("%Y-%m-%d")
+total = len(df)
+new_wk = len(df[df["Date Detected"] >= week_ago])
+today_n = len(df[df["Date Detected"] == TODAY])
+to_verify = len(df[df["Status"] == "To Verify"])
+verified = len(df[df["Status"] == "Verified"])
+rejected = len(df[df["Status"] == "Rejected"])
+high_risk = len(df[(df["Risk Score"] >= 70)])
+opportunities = len(df[(df["Opp Score"] >= 70) & (df["Status"].isin(["New","To Verify"]))])
+hours_saved = round(total * 0.06)
+last_scan_txt = st.session_state.last_scan.strftime("%d %b %Y, %H:%M") if st.session_state.last_scan else "12 Jun 2026, 09:00"
+
 st.markdown(f"""
-<div class="hero-wrap">
-  <div>
-    <div class="hero-title">Affiliate Intelligence Platform</div>
-    <div class="hero-sub">Real-time monitoring of affiliate programs across the iGaming ecosystem.</div>
+<div style="background:linear-gradient(135deg,#0B0B0B 0%,#0D0B14 100%);
+  border:1px solid rgba(139,92,246,0.12);border-radius:20px;
+  padding:40px 48px;margin-bottom:32px;position:relative;overflow:hidden;">
+  <div style="position:absolute;top:-80px;right:-80px;width:300px;height:300px;
+    background:radial-gradient(circle,rgba(124,58,237,0.08) 0%,transparent 70%);pointer-events:none;"></div>
+  <div style="position:absolute;bottom:-60px;left:200px;width:200px;height:200px;
+    background:radial-gradient(circle,rgba(139,92,246,0.04) 0%,transparent 70%);pointer-events:none;"></div>
+
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+        color:#7C3AED;margin-bottom:12px;">◈ AFFILIATE INTELLIGENCE PLATFORM</div>
+      <div style="font-size:32px;font-weight:800;letter-spacing:-1px;color:#FFFFFF;margin-bottom:8px;
+        background:linear-gradient(135deg,#FFFFFF 0%,#A78BFA 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
+        Real-time iGaming<br>Intelligence Dashboard</div>
+      <div style="font-size:14px;color:#52525B;margin-top:8px;">
+        Monitoring affiliate programs across the iGaming ecosystem</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="display:inline-flex;align-items:center;gap:7px;
+        background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);
+        border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;color:#22C55E;margin-bottom:8px;">
+        <span style="width:7px;height:7px;border-radius:50%;background:#22C55E;
+          box-shadow:0 0 8px #22C55E;display:inline-block;animation:none;"></span> LIVE
+      </div>
+      <div style="font-size:11px;color:#3F3F46;">Last scan: {last_scan_txt}</div>
+    </div>
   </div>
-  <div style="text-align:right;">
-    <div class="live-badge"><span class="live-pulse"></span> LIVE</div>
-    <div class="last-scan-lbl">Last scan: {last_scan_text}</div>
+
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:32px;">
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);
+      border-radius:12px;padding:16px 20px;">
+      <div style="font-size:28px;font-weight:800;color:#FFFFFF;letter-spacing:-1px;">{total}</div>
+      <div style="font-size:11px;color:#52525B;margin-top:2px;text-transform:uppercase;letter-spacing:.06em;">Tracked programs</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);
+      border-radius:12px;padding:16px 20px;">
+      <div style="font-size:28px;font-weight:800;color:#A78BFA;letter-spacing:-1px;">{new_wk}</div>
+      <div style="font-size:11px;color:#52525B;margin-top:2px;text-transform:uppercase;letter-spacing:.06em;">New this week</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);
+      border-radius:12px;padding:16px 20px;">
+      <div style="font-size:28px;font-weight:800;color:#22C55E;letter-spacing:-1px;">{opportunities}</div>
+      <div style="font-size:11px;color:#52525B;margin-top:2px;text-transform:uppercase;letter-spacing:.06em;">Recommended opportunities</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);
+      border-radius:12px;padding:16px 20px;">
+      <div style="font-size:28px;font-weight:800;color:#EF4444;letter-spacing:-1px;">{high_risk}</div>
+      <div style="font-size:11px;color:#52525B;margin-top:2px;text-transform:uppercase;letter-spacing:.06em;">Critical risks flagged</div>
+    </div>
   </div>
 </div>
 """, unsafe_allow_html=True)
 
 
-# ════════════════════════ TABS ════════════════════════
-tab1, tab2 = st.tabs(["📊  Monitor", "📋  Weekly CEO Digest"])
+# ══════════════════════════════════════════
+# TABS
+# ══════════════════════════════════════════
+tab1, tab2 = st.tabs(["◈  Intelligence Feed", "◈  Weekly CEO Digest"])
 
 
-# ═══════════════════════════════════════════
+# ══════════════════════════════════════════════════════════
 # TAB 1
-# ═══════════════════════════════════════════
+# ══════════════════════════════════════════════════════════
 with tab1:
-    df = st.session_state.programs
-    week_ago_str = (TODAY_DT - timedelta(days=7)).strftime("%Y-%m-%d")
-    total = len(df)
-    new_this_week = len(df[df["Date Detected"] >= week_ago_str])
-    today_detected = len(df[df["Date Detected"] == TODAY])
-    to_verify = len(df[df["Status"] == "To Verify"])
-    verified = len(df[df["Status"] == "Verified"])
-    rejected = len(df[df["Status"] == "Rejected"])
-    high_risk = len(df[(df["Status"].isin(["To Verify","Rejected"])) & (df["Priority"] == "High")])
-    hours_saved = round(total * 0.06)
 
-    # ── Executive Summary
-    st.markdown('<div class="section-title">Executive Summary</div>', unsafe_allow_html=True)
+    # EXECUTIVE SUMMARY CARDS
+    st.markdown('<div class="sec">Executive Summary</div>', unsafe_allow_html=True)
     e1,e2,e3,e4 = st.columns(4)
-    with e1:
-        st.markdown(f"""
-        <div class="exec-card">
-          <div class="exec-card-icon">🆕</div>
-          <div class="exec-card-trend trend-up">↑ +{new_this_week}</div>
-          <div class="exec-card-val" style="color:#A78BFA;">{new_this_week}</div>
-          <div class="exec-card-label">New Programs This Week</div>
-        </div>""", unsafe_allow_html=True)
-    with e2:
-        st.markdown(f"""
-        <div class="exec-card">
-          <div class="exec-card-icon">⚠️</div>
-          <div class="exec-card-trend trend-warn">Needs action</div>
-          <div class="exec-card-val" style="color:#F59E0B;">{to_verify}</div>
-          <div class="exec-card-label">Programs Requiring Verification</div>
-        </div>""", unsafe_allow_html=True)
-    with e3:
-        st.markdown(f"""
-        <div class="exec-card">
-          <div class="exec-card-icon">🚨</div>
-          <div class="exec-card-trend trend-danger">High priority</div>
-          <div class="exec-card-val" style="color:#EF4444;">{high_risk}</div>
-          <div class="exec-card-label">High Risk Programs</div>
-        </div>""", unsafe_allow_html=True)
-    with e4:
-        st.markdown(f"""
-        <div class="exec-card">
-          <div class="exec-card-icon">⏱️</div>
-          <div class="exec-card-trend trend-up">This week</div>
-          <div class="exec-card-val" style="color:#22C55E;">{hours_saved}h</div>
-          <div class="exec-card-label">Estimated Research Hours Saved</div>
+
+    def exec_card(col, icon, val, val_color, label, sub, trend_label, trend_color, glow_color):
+        col.markdown(f"""
+        <div style="background:#0B0B0B;border:1px solid rgba(255,255,255,0.06);border-radius:14px;
+          padding:24px;position:relative;overflow:hidden;transition:all .2s;
+          box-shadow:0 0 0 0 {glow_color};">
+          <div style="position:absolute;top:0;right:0;width:80px;height:80px;
+            background:radial-gradient(circle,{glow_color} 0%,transparent 70%);opacity:.4;pointer-events:none;"></div>
+          <div style="font-size:22px;margin-bottom:14px;">{icon}</div>
+          <div style="font-size:38px;font-weight:800;color:{val_color};letter-spacing:-1.5px;margin-bottom:6px;">{val}</div>
+          <div style="font-size:13px;font-weight:600;color:#FFFFFF;margin-bottom:4px;">{label}</div>
+          <div style="font-size:12px;color:#52525B;">{sub}</div>
+          <div style="position:absolute;top:20px;right:18px;font-size:10px;font-weight:700;
+            padding:3px 8px;border-radius:5px;background:rgba(255,255,255,0.05);color:{trend_color};">{trend_label}</div>
         </div>""", unsafe_allow_html=True)
 
-    # ── KPI Dashboard
-    st.markdown('<div class="section-title">KPI Dashboard</div>', unsafe_allow_html=True)
-    k1,k2,k3,k4,k5,k6,k7 = st.columns(7)
-    k1.metric("Total Programs", total)
-    k2.metric("New This Week", new_this_week, delta=f"+{new_this_week}")
-    k3.metric("Detected Today", today_detected, delta=f"+{today_detected}")
-    k4.metric("To Verify", to_verify)
-    k5.metric("Verified", verified)
-    k6.metric("Rejected", rejected)
-    k7.metric("Sources Active", len(MONITORING_SOURCES))
+    exec_card(e1,"🟢",opportunities,"#22C55E","Opportunities Detected","Programs worth review this week","↑ This week","#22C55E","rgba(34,197,94,0.1)")
+    exec_card(e2,"🟡",to_verify,"#F59E0B","Requires Verification","Missing license information","Action needed","#F59E0B","rgba(245,158,11,0.1)")
+    exec_card(e3,"🔴",high_risk,"#EF4444","Risk Alerts","Potential reputation issues","Critical","#EF4444","rgba(239,68,68,0.1)")
+    exec_card(e4,"⚡",f"{hours_saved}h","#A78BFA","Research Hours Saved","Avoided manual work this week","Automated","#A78BFA","rgba(139,92,246,0.1)")
 
-    st.markdown("<br>", unsafe_allow_html=True)
+    # RECOMMENDED ACTIONS
+    st.markdown('<div class="sec">Recommended Actions</div>', unsafe_allow_html=True)
 
-    # ── Scan Engine
-    st.markdown('<div class="section-title">Monitoring Engine</div>', unsafe_allow_html=True)
-    st.markdown('<div class="scan-engine-card">', unsafe_allow_html=True)
-    sc1, sc2 = st.columns([3,2])
+    top_opps = df[(df["Opp Score"] >= 65) & (df["Status"].isin(["New","To Verify"]))].sort_values("Opp Score", ascending=False).head(6)
+
+    if len(top_opps) > 0:
+        cols = st.columns(3)
+        for i, (_, row) in enumerate(top_opps.iterrows()):
+            with cols[i % 3]:
+                opp = row["Opp Score"]
+                risk = row["Risk Score"]
+                urgency = "Review within 24h" if row["Priority"] == "High" else "Review this week"
+                urgency_color = "#EF4444" if row["Priority"] == "High" else "#F59E0B"
+                geos = row["GEO"].split(", ")[:2]
+                geo_chips = "".join([f'<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,0.05);color:#71717A;margin-right:4px;">{g}</span>' for g in geos])
+
+                st.markdown(f"""
+                <div style="background:#0B0B0B;border:1px solid rgba(255,255,255,0.07);border-radius:14px;
+                  padding:22px;margin-bottom:12px;position:relative;overflow:hidden;
+                  border-top:2px solid rgba(139,92,246,0.4);">
+                  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+                    <div>
+                      <div style="font-size:15px;font-weight:700;color:#FFFFFF;margin-bottom:4px;">{row['Name']}</div>
+                      <div style="font-size:11px;color:#52525B;">{row['Source']} · {row['Date Detected']}</div>
+                    </div>
+                    {status_badge(row['Status'])}
+                  </div>
+                  <div style="margin-bottom:14px;">{geo_chips}
+                    <span style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,0.05);color:#71717A;">{row['License']}</span>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+                    <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:10px 12px;">
+                      <div style="font-size:9px;color:#3F3F46;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Opportunity</div>
+                      {opp_badge(opp)}
+                    </div>
+                    <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:10px 12px;">
+                      <div style="font-size:9px;color:#3F3F46;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Risk</div>
+                      {risk_badge(risk)}
+                    </div>
+                  </div>
+                  <div style="font-size:12px;color:#52525B;margin-bottom:12px;">{row['Commission']}</div>
+                  <div style="font-size:11px;font-weight:600;color:{urgency_color};
+                    background:rgba(255,255,255,0.03);border-radius:6px;padding:8px 12px;text-align:center;">
+                    → {urgency}
+                  </div>
+                </div>""", unsafe_allow_html=True)
+
+    # SCAN ENGINE
+    st.markdown('<div class="sec">Monitoring Engine</div>', unsafe_allow_html=True)
+
+    st.markdown("""
+    <div style="background:#0B0B0B;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:24px 28px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div>
+          <div style="font-size:15px;font-weight:600;color:#FFFFFF;margin-bottom:4px;">Automated Intelligence Scan</div>
+          <div style="font-size:13px;color:#52525B;">Crawls 8 sources. Flags new affiliate programs and reputation risks in real time.</div>
+        </div>
+      </div>
+    </div>""", unsafe_allow_html=True)
+
+    sc1, sc2, sc3 = st.columns([1,2,1])
     with sc1:
-        st.markdown('<div class="scan-engine-title">Monitoring Engine</div>', unsafe_allow_html=True)
-        st.markdown('<div class="scan-engine-sub">Automated scan across 8 iGaming intelligence sources. Detects new affiliate programs and flags risks in real time.</div>', unsafe_allow_html=True)
-    with sc2:
-        run_scan = st.button("🔍  Run New Scan", use_container_width=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+        run_scan = st.button("◈  Run New Scan", use_container_width=True)
 
     if run_scan:
-        progress_bar = st.progress(0, text="Initializing scan...")
-        steps = ["AffPapa","GPWA","SBC News","Affiliate Guard Dog","AskGamblers","Trustpilot","Reddit","Gambling Insider"]
-        for i, src in enumerate(steps):
-            time.sleep(0.3)
-            progress_bar.progress((i+1)/len(steps), text=f"Scanning {src}...")
-        time.sleep(0.3)
-        progress_bar.empty()
+        pb = st.progress(0, text="Initializing...")
+        srcs = ["AffPapa","GPWA","SBC News","Affiliate Guard Dog","AskGamblers","Trustpilot","Reddit","Gambling Insider"]
+        for i, s in enumerate(srcs):
+            time.sleep(0.25)
+            pb.progress((i+1)/len(srcs), text=f"Scanning {s}...")
+        time.sleep(0.2)
+        pb.empty()
 
         existing = set(st.session_state.programs["Name"].tolist())
-        available = [p for p in NEW_POOL if p["Name"] not in existing] or NEW_POOL
-        n_new = random.randint(3,5)
-        batch = random.sample(available, min(n_new, len(available)))
-        scan_time = datetime.now()
-        new_df = pd.DataFrame([{**p, "Date Detected": TODAY} for p in batch])
-        st.session_state.programs = pd.concat([st.session_state.programs, new_df], ignore_index=True)
-        st.session_state.last_scan = scan_time
-
-        log = [f"[{scan_time.strftime('%H:%M:%S')}] Scan initiated — {len(MONITORING_SOURCES)} sources active"]
-        for src in steps:
-            log.append(f"[{scan_time.strftime('%H:%M:%S')}]  ↳ {src} — OK")
+        avail = [p for p in NEW_POOL if p["Name"] not in existing] or NEW_POOL
+        batch = random.sample(avail, min(random.randint(3,5), len(avail)))
+        t = datetime.now()
+        new_rows = []
         for p in batch:
-            log.append(f"[{scan_time.strftime('%H:%M:%S')}]  ✓ DETECTED: {p['Name']} via {p['Source']} — {p['Status']}")
-        log.append(f"[{scan_time.strftime('%H:%M:%S')}] ✅ Scan complete — {len(batch)} new programs detected")
+            r = {**p, "Date Detected": TODAY}
+            r["Risk Score"] = risk_score(r)
+            r["Opp Score"] = opp_score(r)
+            new_rows.append(r)
+        st.session_state.programs = pd.concat([st.session_state.programs, pd.DataFrame(new_rows)], ignore_index=True)
+        st.session_state.last_scan = t
+
+        log = [f"[{t.strftime('%H:%M:%S')}] Scan initiated — 8 sources active"]
+        for s in srcs:
+            log.append(f"[{t.strftime('%H:%M:%S')}]  ↳ {s} — OK")
+        for p in batch:
+            log.append(f"[{t.strftime('%H:%M:%S')}]  ✓ {p['Name']} via {p['Source']} — {p['Status']}")
+        log.append(f"[{t.strftime('%H:%M:%S')}] Scan complete — {len(batch)} programs detected")
         st.session_state.scan_log = log
-        st.success(f"✅ Scan completed — {len(batch)} new affiliate programs detected.")
+        st.success(f"✅ Scan complete — {len(batch)} new affiliate programs detected.")
         st.rerun()
 
     if st.session_state.scan_log:
-        st.markdown(f'<div class="log-box">{"<br>".join(st.session_state.scan_log)}</div>', unsafe_allow_html=True)
-
-    # ── High Priority Discoveries
-    st.markdown('<div class="section-title">High Priority Discoveries</div>', unsafe_allow_html=True)
-    df = st.session_state.programs
-    high_prio = df[df["Priority"] == "High"].sort_values("Date Detected", ascending=False).head(10)
-
-    def status_badge(s):
-        if s == "New": return '<span class="badge badge-new">New</span>'
-        if s == "To Verify": return '<span class="badge badge-verify">To Verify</span>'
-        if s == "Verified": return '<span class="badge badge-verified">Verified</span>'
-        return '<span class="badge badge-rejected">Rejected</span>'
-
-    def risk_label(row):
-        if row["License"] == "Unknown" or row["Status"] == "Rejected":
-            return '<span class="risk-high">HIGH</span>'
-        if row["Status"] == "To Verify":
-            return '<span class="risk-med">MEDIUM</span>'
-        return '<span class="risk-low">LOW</span>'
-
-    st.markdown("""
-    <div class="tbl-header">
-      <div>Program</div><div>Source</div><div>GEO</div><div>Commission</div><div>Status</div><div>Risk</div>
-    </div>""", unsafe_allow_html=True)
-
-    for _, row in high_prio.iterrows():
         st.markdown(f"""
-        <div class="priority-card">
-          <div><div class="priority-name">{row['Name']}</div><div class="priority-source">{row['Date Detected']}</div></div>
-          <div style="font-size:12px;color:#A1A1AA;">{row['Source']}</div>
-          <div style="font-size:12px;color:#A1A1AA;">{row['GEO']}</div>
-          <div style="font-size:12px;color:#A1A1AA;">{row['Commission']}</div>
-          <div>{status_badge(row['Status'])}</div>
-          <div>{risk_label(row)}</div>
+        <div style="background:#030303;border:1px solid rgba(255,255,255,0.05);border-radius:10px;
+          padding:16px 18px;margin-top:12px;font-family:'Courier New',monospace;
+          font-size:12px;line-height:1.9;color:#22C55E;">
+          {"<br>".join(st.session_state.scan_log)}
         </div>""", unsafe_allow_html=True)
 
-    # ── Full Database
-    st.markdown('<div class="section-title">Affiliate Programs Database</div>', unsafe_allow_html=True)
+    # PROGRAM CARDS VIEW (paginated)
+    st.markdown('<div class="sec">Affiliate Programs Database</div>', unsafe_allow_html=True)
     df = st.session_state.programs
 
     f1,f2,f3,f4,f5 = st.columns(5)
-    with f1: search = st.text_input("Search", placeholder="Program name...")
-    with f2: status_f = st.selectbox("Status", ["All"] + sorted(df["Status"].unique().tolist()))
-    with f3: priority_f = st.selectbox("Priority", ["All","High","Medium","Low"])
-    with f4: source_f = st.selectbox("Source", ["All"] + sorted(df["Source"].unique().tolist()))
+    with f1: srch = st.text_input("Search", placeholder="Program name...")
+    with f2: sf = st.selectbox("Status", ["All"] + sorted(df["Status"].unique().tolist()))
+    with f3: pf = st.selectbox("Priority", ["All","High","Medium","Low"])
+    with f4: srcf = st.selectbox("Source", ["All"] + sorted(df["Source"].unique().tolist()))
     with f5:
-        geo_opts = sorted(set(g.strip() for geos in df["GEO"].str.split(",") for g in geos))
-        geo_f = st.selectbox("GEO", ["All"] + geo_opts)
+        geopts = sorted(set(g.strip() for geos in df["GEO"].str.split(",") for g in geos))
+        gf = st.selectbox("GEO", ["All"] + geopts)
 
-    filtered = df.copy()
-    if search: filtered = filtered[filtered["Name"].str.contains(search, case=False, na=False)]
-    if status_f != "All": filtered = filtered[filtered["Status"] == status_f]
-    if priority_f != "All": filtered = filtered[filtered["Priority"] == priority_f]
-    if source_f != "All": filtered = filtered[filtered["Source"] == source_f]
-    if geo_f != "All": filtered = filtered[filtered["GEO"].str.contains(geo_f, case=False, na=False)]
+    filt = df.copy()
+    if srch: filt = filt[filt["Name"].str.contains(srch, case=False, na=False)]
+    if sf != "All": filt = filt[filt["Status"] == sf]
+    if pf != "All": filt = filt[filt["Priority"] == pf]
+    if srcf != "All": filt = filt[filt["Source"] == srcf]
+    if gf != "All": filt = filt[filt["GEO"].str.contains(gf, case=False, na=False)]
 
-    filtered_sorted = filtered.sort_values("Date Detected", ascending=False).reset_index(drop=True)
+    filt = filt.sort_values("Date Detected", ascending=False).reset_index(drop=True)
+    RPP = 15
+    total_pg = max(1, math.ceil(len(filt) / RPP))
+    if st.session_state.db_page >= total_pg: st.session_state.db_page = 0
 
-    rows_per_page = 20
-    total_pages = max(1, math.ceil(len(filtered_sorted) / rows_per_page))
-    if st.session_state.page >= total_pages:
-        st.session_state.page = 0
+    r1,r2,r3,r4,r5 = st.columns([3,2,1,1,1])
+    with r1:
+        st.markdown(f"<div style='font-size:13px;color:#52525B;padding:8px 0;'>Showing <strong style='color:#A1A1AA;'>{len(filt)}</strong> of <strong style='color:#A1A1AA;'>{len(df)}</strong> — Page {st.session_state.db_page+1}/{total_pg}</div>", unsafe_allow_html=True)
+    with r2:
+        buf = io.StringIO(); filt.to_csv(buf, index=False)
+        st.download_button("⬇ Export CSV", buf.getvalue(), f"affiliate_{TODAY}.csv", "text/csv", use_container_width=True)
+    with r3:
+        if st.button("◀", use_container_width=True) and st.session_state.db_page > 0:
+            st.session_state.db_page -= 1; st.rerun()
+    with r4:
+        if st.button("▶", use_container_width=True) and st.session_state.db_page < total_pg - 1:
+            st.session_state.db_page += 1; st.rerun()
 
-    rc, ec, pc1, pc2, pc3 = st.columns([3,2,1,1,1])
-    with rc:
-        st.markdown(f"<div class='page-info'>Showing <strong>{len(filtered_sorted)}</strong> of <strong>{len(df)}</strong> programs — Page {st.session_state.page+1} / {total_pages}</div>", unsafe_allow_html=True)
-    with ec:
-        buf = io.StringIO()
-        filtered_sorted.to_csv(buf, index=False)
-        st.download_button("⬇ Export CSV", buf.getvalue(), f"affiliate_programs_{TODAY}.csv", "text/csv", use_container_width=True)
-    with pc1:
-        if st.button("◀ Prev") and st.session_state.page > 0:
-            st.session_state.page -= 1
-            st.rerun()
-    with pc2:
-        if st.button("Next ▶") and st.session_state.page < total_pages - 1:
-            st.session_state.page += 1
-            st.rerun()
+    page_df = filt.iloc[st.session_state.db_page*RPP:(st.session_state.db_page+1)*RPP]
 
-    page_df = filtered_sorted.iloc[st.session_state.page*rows_per_page:(st.session_state.page+1)*rows_per_page].copy()
-
-    def badge_html(s):
-        if s == "New":       return '<span style="display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(124,58,237,0.15);color:#A78BFA;border:1px solid rgba(124,58,237,0.25);">New</span>'
-        if s == "To Verify": return '<span style="display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(245,158,11,0.12);color:#F59E0B;border:1px solid rgba(245,158,11,0.2);">To Verify</span>'
-        if s == "Verified":  return '<span style="display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(34,197,94,0.1);color:#22C55E;border:1px solid rgba(34,197,94,0.2);">Verified</span>'
-        return                       '<span style="display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(239,68,68,0.1);color:#EF4444;border:1px solid rgba(239,68,68,0.2);">Rejected</span>'
-
-    def priority_html(p):
-        if p == "High":   return '<span style="color:#EF4444;font-size:12px;font-weight:600;">High</span>'
-        if p == "Medium": return '<span style="color:#F59E0B;font-size:12px;font-weight:600;">Medium</span>'
-        return                    '<span style="color:#71717A;font-size:12px;font-weight:600;">Low</span>'
-
+    # Custom HTML table
     rows_html = ""
-    for _, r in page_df.iterrows():
-        rows_html += f"""
-        <tr>
-          <td style="padding:12px 14px;color:#FFFFFF;font-weight:500;font-size:13px;">{r['Name']}</td>
-          <td style="padding:12px 14px;color:#A1A1AA;font-size:13px;">{r['Date Detected']}</td>
-          <td style="padding:12px 14px;color:#A1A1AA;font-size:13px;">{r['Source']}</td>
-          <td style="padding:12px 14px;color:#A1A1AA;font-size:13px;">{r['GEO']}</td>
-          <td style="padding:12px 14px;color:#A1A1AA;font-size:13px;">{r['License']}</td>
-          <td style="padding:12px 14px;color:#A1A1AA;font-size:13px;">{r['Commission']}</td>
-          <td style="padding:12px 14px;">{badge_html(r['Status'])}</td>
-          <td style="padding:12px 14px;">{priority_html(r['Priority'])}</td>
-          <td style="padding:12px 14px;color:#52525B;font-size:12px;max-width:200px;">{r['Notes']}</td>
-        </tr>"""
-
-    table_html = f"""
-    <div style="overflow-x:auto;border-radius:12px;border:1px solid rgba(255,255,255,0.08);">
-      <table style="width:100%;border-collapse:collapse;background:#111111;">
-        <thead>
-          <tr style="background:#18181B;border-bottom:1px solid rgba(255,255,255,0.08);">
-            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;white-space:nowrap;">Program</th>
-            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;white-space:nowrap;">Detected</th>
-            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;white-space:nowrap;">Source</th>
-            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;white-space:nowrap;">GEO</th>
-            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;white-space:nowrap;">License</th>
-            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;white-space:nowrap;">Commission</th>
-            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;white-space:nowrap;">Status</th>
-            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;white-space:nowrap;">Priority</th>
-            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;">Notes</th>
-          </tr>
-        </thead>
-        <tbody>
-          {''.join(['<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">' + r[4:] if i % 2 == 1 else r for i, r in enumerate(rows_html.strip().split('<tr>')[1:])])}
-        </tbody>
-      </table>
-    </div>"""
-
-    # Simpler, more reliable render
-    rows_final = ""
     for i, (_, r) in enumerate(page_df.iterrows()):
-        bg = "background:rgba(255,255,255,0.015);" if i % 2 == 1 else ""
-        rows_final += f"""<tr style="border-bottom:1px solid rgba(255,255,255,0.04);{bg}">
-          <td style="padding:12px 14px;color:#FFFFFF;font-weight:500;font-size:13px;">{r['Name']}</td>
-          <td style="padding:12px 14px;color:#A1A1AA;font-size:12px;white-space:nowrap;">{r['Date Detected']}</td>
-          <td style="padding:12px 14px;color:#A1A1AA;font-size:12px;">{r['Source']}</td>
-          <td style="padding:12px 14px;color:#A1A1AA;font-size:12px;">{r['GEO']}</td>
-          <td style="padding:12px 14px;color:#A1A1AA;font-size:12px;">{r['License']}</td>
-          <td style="padding:12px 14px;color:#A1A1AA;font-size:12px;">{r['Commission']}</td>
-          <td style="padding:12px 14px;">{badge_html(r['Status'])}</td>
-          <td style="padding:12px 14px;">{priority_html(r['Priority'])}</td>
-          <td style="padding:12px 14px;color:#52525B;font-size:12px;">{r['Notes']}</td>
+        zebra = "background:rgba(255,255,255,0.012);" if i % 2 == 1 else ""
+        risk_c = "#EF4444" if r["Risk Score"] >= 70 else ("#F59E0B" if r["Risk Score"] >= 40 else "#22C55E")
+        opp_c = "#22C55E" if r["Opp Score"] >= 70 else ("#F59E0B" if r["Opp Score"] >= 40 else "#71717A")
+        rows_html += f"""
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.04);{zebra}transition:background .15s;">
+          <td style="padding:13px 16px;color:#FFFFFF;font-weight:500;font-size:13px;">{r['Name']}</td>
+          <td style="padding:13px 16px;color:#71717A;font-size:12px;white-space:nowrap;">{r['Date Detected']}</td>
+          <td style="padding:13px 16px;color:#71717A;font-size:12px;">{r['Source']}</td>
+          <td style="padding:13px 16px;color:#71717A;font-size:12px;">{r['GEO']}</td>
+          <td style="padding:13px 16px;color:#71717A;font-size:12px;">{r['License']}</td>
+          <td style="padding:13px 16px;color:#71717A;font-size:12px;">{r['Commission']}</td>
+          <td style="padding:13px 16px;">{status_badge(r['Status'])}</td>
+          <td style="padding:13px 16px;font-size:12px;font-weight:700;color:{opp_c};">{r['Opp Score']}</td>
+          <td style="padding:13px 16px;font-size:12px;font-weight:700;color:{risk_c};">{r['Risk Score']}</td>
         </tr>"""
 
     st.markdown(f"""
-    <div style="overflow-x:auto;border-radius:12px;border:1px solid rgba(255,255,255,0.08);margin-top:8px;">
-      <table style="width:100%;border-collapse:collapse;background:#111111;">
+    <div style="overflow-x:auto;border-radius:14px;border:1px solid rgba(255,255,255,0.07);margin-top:8px;">
+      <table style="width:100%;border-collapse:collapse;background:#0B0B0B;">
         <thead>
-          <tr style="background:#18181B;border-bottom:1px solid rgba(255,255,255,0.08);">
-            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;">Program</th>
-            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;white-space:nowrap;">Detected</th>
-            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;">Source</th>
-            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;">GEO</th>
-            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;">License</th>
-            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;">Commission</th>
-            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;">Status</th>
-            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;">Priority</th>
-            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;">Notes</th>
+          <tr style="background:#0D0D0D;border-bottom:1px solid rgba(255,255,255,0.07);">
+            <th style="padding:11px 16px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#3F3F46;">Program</th>
+            <th style="padding:11px 16px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#3F3F46;white-space:nowrap;">Detected</th>
+            <th style="padding:11px 16px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#3F3F46;">Source</th>
+            <th style="padding:11px 16px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#3F3F46;">GEO</th>
+            <th style="padding:11px 16px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#3F3F46;">License</th>
+            <th style="padding:11px 16px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#3F3F46;">Commission</th>
+            <th style="padding:11px 16px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#3F3F46;">Status</th>
+            <th style="padding:11px 16px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#3F3F46;">Opp ↑</th>
+            <th style="padding:11px 16px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#3F3F46;">Risk ↑</th>
           </tr>
         </thead>
-        <tbody>{rows_final}</tbody>
+        <tbody>{rows_html}</tbody>
       </table>
-    </div>
-    """, unsafe_allow_html=True)
+    </div>""", unsafe_allow_html=True)
 
-    # ── Monitoring Sources
-    st.markdown('<div class="section-title">Monitoring Sources</div>', unsafe_allow_html=True)
-    src_cols = st.columns(4)
-    for i, src in enumerate(MONITORING_SOURCES):
-        with src_cols[i % 4]:
-            icon = SOURCE_ICONS.get(src["Source"], "🔗")
-            prio_color = "#22C55E" if src["Priority"] == "High" else "#F59E0B"
+    # MONITORING SOURCES
+    st.markdown('<div class="sec">Intelligence Sources</div>', unsafe_allow_html=True)
+    sc = st.columns(4)
+    for i, s in enumerate(MONITORING_SOURCES_DATA):
+        with sc[i % 4]:
+            rel = s["reliability"]
+            rel_c = "#22C55E" if rel >= 90 else ("#F59E0B" if rel >= 75 else "#EF4444")
             st.markdown(f"""
-            <div class="source-card">
-              <div style="font-size:22px;margin-bottom:8px;">{icon}</div>
-              <div class="source-name">{src['Source']}</div>
-              <div class="source-type">{src['Type']}</div>
-              <div class="source-row">Monitors: <span>{src['Monitors']}</span></div>
-              <div class="source-row">Frequency: <span>{src['Frequency']}</span></div>
-              <div class="source-row">Priority: <span style="color:{prio_color};font-weight:600;">{src['Priority']}</span></div>
-              <div class="source-row">Last checked: <span>{src['Last Checked']}</span></div>
+            <div style="background:#0B0B0B;border:1px solid rgba(255,255,255,0.06);border-radius:12px;
+              padding:20px;margin-bottom:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+                <div style="font-size:14px;font-weight:700;color:#FFFFFF;">{s['name']}</div>
+                <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;
+                  background:rgba(34,197,94,0.1);color:#22C55E;border:1px solid rgba(34,197,94,0.2);">ACTIVE</span>
+              </div>
+              <div style="font-size:11px;color:#3F3F46;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;">{s['type']}</div>
+              <div style="font-size:13px;color:#A1A1AA;margin-bottom:4px;">Found this week: <strong style="color:#FFFFFF;">{s['found_week']}</strong></div>
+              <div style="font-size:13px;color:#A1A1AA;margin-bottom:4px;">Last scan: <strong style="color:#FFFFFF;">{s['last']}</strong></div>
+              <div style="font-size:13px;color:#A1A1AA;margin-bottom:12px;">Reliability: <strong style="color:{rel_c};">{rel}%</strong></div>
+              <div style="height:3px;background:rgba(255,255,255,0.05);border-radius:2px;">
+                <div style="height:3px;background:{rel_c};border-radius:2px;width:{rel}%;opacity:0.6;"></div>
+              </div>
             </div>""", unsafe_allow_html=True)
-        if (i+1) % 4 == 0 and i+1 < len(MONITORING_SOURCES):
-            src_cols = st.columns(4)
+        if (i+1) % 4 == 0 and i+1 < len(MONITORING_SOURCES_DATA):
+            sc = st.columns(4)
 
-    # ── Alert Center
-    st.markdown('<div class="section-title">Alert Center</div>', unsafe_allow_html=True)
+    # ALERT CENTER
+    st.markdown('<div class="sec">Alert Center</div>', unsafe_allow_html=True)
     al1,al2,al3 = st.columns(3)
-    with al1:
-        st.markdown("""
-        <div class="alert-card alert-card-purple">
-          <div class="alert-icon">🟣</div>
-          <div class="alert-title">New Program Detected</div>
-          <div class="alert-row"><strong>Program:</strong> SpinBet Affiliates</div>
-          <div class="alert-row"><strong>Source:</strong> SBC News &nbsp;|&nbsp; <strong>GEO:</strong> EU, UA</div>
-          <div class="alert-row"><strong>Commission:</strong> RevShare 45%</div>
-          <div class="alert-row"><strong>License:</strong> Curaçao</div>
-          <div class="alert-row"><strong>Signal:</strong> High RevShare. No established track record.</div>
-          <div class="alert-action action-purple">→ Affiliate Manager to verify within 24h</div>
-        </div>""", unsafe_allow_html=True)
-    with al2:
-        st.markdown("""
-        <div class="alert-card alert-card-amber">
-          <div class="alert-icon">🟡</div>
-          <div class="alert-title">License Verification Required</div>
-          <div class="alert-row"><strong>Program:</strong> LuckyNova Partners</div>
-          <div class="alert-row"><strong>Source:</strong> Reddit &nbsp;|&nbsp; <strong>GEO:</strong> UA, EU</div>
-          <div class="alert-row"><strong>License:</strong> Unknown</div>
-          <div class="alert-row"><strong>Signal:</strong> Delayed payment reports in affiliate community.</div>
-          <div class="alert-row"><strong>Risk:</strong> High</div>
-          <div class="alert-action action-amber">→ Verify licensing before any engagement</div>
-        </div>""", unsafe_allow_html=True)
-    with al3:
-        st.markdown("""
-        <div class="alert-card alert-card-red">
-          <div class="alert-icon">🔴</div>
-          <div class="alert-title">Reputation Risk Flagged</div>
-          <div class="alert-row"><strong>Program:</strong> Fortune Affiliates</div>
-          <div class="alert-row"><strong>Source:</strong> Affiliate Guard Dog</div>
-          <div class="alert-row"><strong>License:</strong> MGA</div>
-          <div class="alert-row"><strong>Signal:</strong> Consistent slow payment pattern — 3 months.</div>
-          <div class="alert-row"><strong>Risk:</strong> High</div>
-          <div class="alert-action action-red">→ Do not onboard until reputation confirmed</div>
-        </div>""", unsafe_allow_html=True)
-
-    # ── Next Steps
-    st.markdown('<div class="section-title">Next Steps — Scaling to Production</div>', unsafe_allow_html=True)
-    steps = [
-        ("01","Connect live scrapers / APIs","Apify or ParseHub for AffPapa, GPWA, SBC News. WhoisXML API for new domain detection."),
-        ("02","Add deduplication logic","Prevent same program appearing from multiple sources. Match by name + URL fingerprint."),
-        ("03","Set up scheduled scans","Automate daily scan at 09:00 via cron job or Make.com. Zero manual trigger needed."),
-        ("04","Assign business owner","Affiliate Manager or SEO Head owns weekly verification. Clear SLA: 48h per new program."),
-        ("05","Add Slack / email alerts","Trigger real-time alerts to #affiliate-intel on every High Priority detection."),
-        ("06","Build automated CEO Digest","Auto-generate Monday morning summary. Already prototyped in CEO Digest tab."),
+    alerts = [
+        (al1,"rgba(139,92,246,0.08)","rgba(139,92,246,0.25)","rgba(139,92,246,0.4)","🟣","New Program Detected",
+         "SpinBet Affiliates","SBC News","EU, UA","Curaçao","RevShare 45%",
+         "New program. High RevShare with no established track record. Rapid growth signal.",
+         "→ Affiliate Manager to verify terms and license within 24h","#A78BFA"),
+        (al2,"rgba(245,158,11,0.06)","rgba(245,158,11,0.2)","rgba(245,158,11,0.35)","🟡","License Verification Required",
+         "LuckyNova Partners","Reddit","UA, EU","Unknown","CPA $120",
+         "Community reporting delayed payments. License cannot be confirmed from public sources.",
+         "→ Verify licensing information before any engagement","#F59E0B"),
+        (al3,"rgba(239,68,68,0.06)","rgba(239,68,68,0.2)","rgba(239,68,68,0.35)","🔴","Reputation Risk Flagged",
+         "Fortune Affiliates","Affiliate Guard Dog","Worldwide","MGA","RevShare 25-40%",
+         "Consistent slow payment pattern reported over 3 consecutive months in affiliate community.",
+         "→ Do not onboard until reputation fully confirmed","#EF4444"),
     ]
-    st1,st2 = st.columns(2)
-    for i,(num,title,desc) in enumerate(steps):
-        with (st1 if i%2==0 else st2):
+    for col, bg, bdr, left_c, icon, title, prog, src, geo, lic, comm, reason, action, action_c in alerts:
+        with col:
+            col.markdown(f"""
+            <div style="background:{bg};border:1px solid {bdr};border-left:4px solid {left_c};
+              border-radius:12px;padding:22px;margin-bottom:8px;">
+              <div style="font-size:18px;margin-bottom:10px;">{icon}</div>
+              <div style="font-size:14px;font-weight:700;color:#FFFFFF;margin-bottom:12px;">{title}</div>
+              <div style="font-size:13px;color:#71717A;margin-bottom:3px;"><strong style="color:#A1A1AA;">Program:</strong> {prog}</div>
+              <div style="font-size:13px;color:#71717A;margin-bottom:3px;"><strong style="color:#A1A1AA;">Source:</strong> {src} &nbsp;|&nbsp; <strong style="color:#A1A1AA;">GEO:</strong> {geo}</div>
+              <div style="font-size:13px;color:#71717A;margin-bottom:3px;"><strong style="color:#A1A1AA;">License:</strong> {lic} &nbsp;|&nbsp; <strong style="color:#A1A1AA;">Commission:</strong> {comm}</div>
+              <div style="font-size:12px;color:#52525B;margin:12px 0;padding:10px 12px;
+                background:rgba(255,255,255,0.03);border-radius:6px;">{reason}</div>
+              <div style="font-size:12px;font-weight:600;color:{action_c};
+                border-top:1px solid rgba(255,255,255,0.05);padding-top:12px;">{action}</div>
+            </div>""", unsafe_allow_html=True)
+
+    # NEXT STEPS
+    st.markdown('<div class="sec">Scaling to Production</div>', unsafe_allow_html=True)
+    steps = [
+        ("01","Connect live scrapers","Apify for AffPapa, GPWA, SBC News. WhoisXML for new domain detection."),
+        ("02","Deduplication layer","Prevent same program from multiple sources. Match by name + URL fingerprint."),
+        ("03","Scheduled scans","Daily 09:00 via cron or Make.com. Zero manual triggers."),
+        ("04","Assign business owner","Affiliate Manager owns verification. SLA: 48h per new program."),
+        ("05","Slack / email alerts","Real-time push to #affiliate-intel on every High Priority detection."),
+        ("06","Automated CEO Digest","Monday 09:00 auto-generated report. See CEO Digest tab."),
+    ]
+    ns1,ns2 = st.columns(2)
+    for i,(n,t,d) in enumerate(steps):
+        with (ns1 if i%2==0 else ns2):
             st.markdown(f"""
-            <div class="step-item">
-              <div class="step-num">{num}</div>
-              <div><div class="step-title">{title}</div><div class="step-desc">{desc}</div></div>
+            <div style="background:#0B0B0B;border:1px solid rgba(255,255,255,0.06);border-radius:10px;
+              padding:16px 20px;margin-bottom:8px;display:flex;align-items:flex-start;gap:14px;">
+              <div style="background:rgba(139,92,246,0.12);color:#A78BFA;font-weight:700;font-size:11px;
+                padding:4px 9px;border-radius:5px;min-width:32px;text-align:center;">{n}</div>
+              <div>
+                <div style="font-weight:600;color:#FFFFFF;font-size:13px;margin-bottom:3px;">{t}</div>
+                <div style="font-size:12px;color:#52525B;">{d}</div>
+              </div>
             </div>""", unsafe_allow_html=True)
 
 
-# ═══════════════════════════════════════════
+# ══════════════════════════════════════════════════════════
 # TAB 2 — CEO DIGEST
-# ═══════════════════════════════════════════
+# ══════════════════════════════════════════════════════════
 with tab2:
     df = st.session_state.programs
-    week_ago_str = (TODAY_DT - timedelta(days=7)).strftime("%Y-%m-%d")
-    new_week_df = df[df["Date Detected"] >= week_ago_str].copy()
-    top5 = new_week_df.sort_values("Date Detected", ascending=False).head(5)
-    risks = df[(df["Status"] == "To Verify") & (df["Priority"] == "High")].head(3)
-    verified_week = new_week_df[new_week_df["Status"] == "Verified"]
-    unknown_lic = len(df[df["License"] == "Unknown"])
+    wk = (TODAY_DT - timedelta(days=7)).strftime("%Y-%m-%d")
+    new_wk_df = df[df["Date Detected"] >= wk].copy()
+    top5 = new_wk_df.sort_values("Opp Score", ascending=False).head(5)
+    risks_df = df[(df["Risk Score"] >= 70)].sort_values("Risk Score", ascending=False).head(5)
+    verified_wk = new_wk_df[new_wk_df["Status"] == "Verified"]
+    unk_lic = len(df[df["License"] == "Unknown"])
 
     st.markdown(f"""
-    <div class="digest-hero">
-      <div class="digest-title">📋 Weekly CEO Digest</div>
-      <div class="digest-sub">Week of {(TODAY_DT - timedelta(days=6)).strftime('%d %b')} — {TODAY_DT.strftime('%d %b %Y')} &nbsp;·&nbsp; Auto-generated by Affiliate Intelligence Platform</div>
+    <div style="background:linear-gradient(135deg,#0B0B0B,#0D0B14);
+      border:1px solid rgba(139,92,246,0.15);border-radius:18px;padding:36px 40px;margin-bottom:28px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+        color:#7C3AED;margin-bottom:12px;">EXECUTIVE REPORT</div>
+      <div style="font-size:26px;font-weight:800;color:#FFFFFF;letter-spacing:-.5px;margin-bottom:6px;">
+        Weekly CEO Digest</div>
+      <div style="font-size:13px;color:#52525B;">
+        Week of {(TODAY_DT-timedelta(days=6)).strftime('%d %b')} — {TODAY_DT.strftime('%d %b %Y')} &nbsp;·&nbsp; Auto-generated by Affiliate Intelligence Platform</div>
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown(f"""
-    <div class="savings-bar">
-      <div><div class="savings-item-val">~15h</div><div class="savings-item-lbl">Manual research avoided</div></div>
-      <div><div class="savings-item-val">{len(df)}</div><div class="savings-item-lbl">Programs reviewed automatically</div></div>
-      <div><div class="savings-item-val">{len(MONITORING_SOURCES)}</div><div class="savings-item-lbl">Sources monitored continuously</div></div>
-      <div><div class="savings-item-val">{len(new_week_df)}</div><div class="savings-item-lbl">New programs detected</div></div>
+    <div style="background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.12);
+      border-radius:14px;padding:22px 28px;display:flex;gap:48px;align-items:center;margin-bottom:28px;">
+      <div><div style="font-size:32px;font-weight:800;color:#22C55E;letter-spacing:-1px;">~15h</div>
+        <div style="font-size:10px;color:#3F3F46;text-transform:uppercase;letter-spacing:.08em;margin-top:2px;">Manual research avoided</div></div>
+      <div><div style="font-size:32px;font-weight:800;color:#22C55E;letter-spacing:-1px;">{len(df)}</div>
+        <div style="font-size:10px;color:#3F3F46;text-transform:uppercase;letter-spacing:.08em;margin-top:2px;">Programs reviewed automatically</div></div>
+      <div><div style="font-size:32px;font-weight:800;color:#22C55E;letter-spacing:-1px;">{len(new_wk_df)}</div>
+        <div style="font-size:10px;color:#3F3F46;text-transform:uppercase;letter-spacing:.08em;margin-top:2px;">New programs this week</div></div>
+      <div><div style="font-size:32px;font-weight:800;color:#22C55E;letter-spacing:-1px;">{len(risks_df)}</div>
+        <div style="font-size:10px;color:#3F3F46;text-transform:uppercase;letter-spacing:.08em;margin-top:2px;">Risk flags requiring action</div></div>
     </div>
     """, unsafe_allow_html=True)
 
-    d1,d2,d3,d4 = st.columns(4)
-    d1.metric("New This Week", len(new_week_df))
-    d2.metric("High Priority — To Verify", len(risks))
-    d3.metric("Verified This Week", len(verified_week))
-    d4.metric("Unknown License", unknown_lic)
+    dc1,dc2,dc3,dc4 = st.columns(4)
+    dc1.metric("New This Week", len(new_wk_df))
+    dc2.metric("High Risk Flags", len(risks_df))
+    dc3.metric("Verified This Week", len(verified_wk))
+    dc4.metric("Unknown License", unk_lic)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    st.markdown('<div class="section-title">Top Opportunities This Week</div>', unsafe_allow_html=True)
-    if len(top5) == 0:
-        st.info("No new programs this week. Run a scan to populate.")
-    else:
-        for _, row in top5.iterrows():
+    dg1, dg2 = st.columns([3,2])
+
+    with dg1:
+        st.markdown('<div class="sec">Top Opportunities This Week</div>', unsafe_allow_html=True)
+        if len(top5) == 0:
+            st.info("No programs detected this week. Run a scan.")
+        else:
+            for _, row in top5.iterrows():
+                opp = row["Opp Score"]
+                risk = row["Risk Score"]
+                opp_c = "#22C55E" if opp >= 70 else "#F59E0B"
+                risk_c = "#EF4444" if risk >= 70 else ("#F59E0B" if risk >= 40 else "#22C55E")
+                st.markdown(f"""
+                <div style="background:#0B0B0B;border:1px solid rgba(255,255,255,0.06);
+                  border-radius:12px;padding:18px 20px;margin-bottom:10px;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                    <div style="font-size:14px;font-weight:700;color:#FFFFFF;">{row['Name']}</div>
+                    {status_badge(row['Status'])}
+                  </div>
+                  <div style="font-size:12px;color:#52525B;margin-bottom:8px;">
+                    {row['Source']} · {row['GEO']} · {row['Commission']}
+                  </div>
+                  <div style="display:flex;gap:16px;">
+                    <span style="font-size:12px;color:{opp_c};">Opp: <strong>{opp}/100</strong></span>
+                    <span style="font-size:12px;color:{risk_c};">Risk: <strong>{risk}/100</strong></span>
+                    <span style="font-size:12px;color:#52525B;">{row['License']}</span>
+                  </div>
+                </div>""", unsafe_allow_html=True)
+
+    with dg2:
+        st.markdown('<div class="sec">Risk Flags</div>', unsafe_allow_html=True)
+        if len(risks_df) == 0:
+            st.success("No critical risks this week.")
+        else:
+            for _, row in risks_df.iterrows():
+                st.markdown(f"""
+                <div style="background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.15);
+                  border-left:3px solid #EF4444;border-radius:10px;padding:14px 16px;margin-bottom:8px;">
+                  <div style="font-size:13px;font-weight:600;color:#FFFFFF;margin-bottom:4px;">{row['Name']}</div>
+                  <div style="font-size:12px;color:#71717A;">{row['Notes']}</div>
+                  <div style="font-size:11px;color:#EF4444;margin-top:6px;font-weight:600;">Risk Score: {row['Risk Score']}/100</div>
+                </div>""", unsafe_allow_html=True)
+
+        st.markdown('<div class="sec">Recommended Actions</div>', unsafe_allow_html=True)
+        recs = [
+            f"Verify {len(risks_df)} high-risk programs before engagement.",
+            f"Review {unk_lic} programs with unknown license.",
+            "Update all verification statuses by Friday 15:00.",
+            "Run next scan Monday 09:00 to refresh intelligence.",
+            "Assign Affiliate Manager as process owner.",
+        ]
+        for rec in recs:
             st.markdown(f"""
-            <div class="digest-opp-card">
-              <div class="digest-opp-name">{row['Name']}</div>
-              <div class="digest-opp-row"><strong>Source:</strong> {row['Source']} &nbsp;|&nbsp; <strong>GEO:</strong> {row['GEO']} &nbsp;|&nbsp; <strong>Commission:</strong> {row['Commission']}</div>
-              <div class="digest-opp-row"><strong>License:</strong> {row['License']} &nbsp;|&nbsp; <strong>Status:</strong> {row['Status']} &nbsp;|&nbsp; <strong>Priority:</strong> {row['Priority']}</div>
-              <div class="digest-opp-row" style="margin-top:8px;color:#52525B;">{row['Notes']}</div>
+            <div style="background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.1);
+              border-radius:8px;padding:12px 16px;margin-bottom:6px;font-size:13px;color:#86EFAC;">
+              ✅ {rec}
             </div>""", unsafe_allow_html=True)
 
-    st.markdown('<div class="section-title">Risk Flags</div>', unsafe_allow_html=True)
-    if len(risks) == 0:
-        st.success("No high-priority risks this week.")
-    else:
-        for _, row in risks.iterrows():
-            st.markdown(f'<div class="risk-flag-card">⚠️ <strong>{row["Name"]}</strong> — {row["Notes"]} | Source: {row["Source"]} | License: {row["License"]}</div>', unsafe_allow_html=True)
-
-    st.markdown('<div class="section-title">Recommended Actions</div>', unsafe_allow_html=True)
-    recs = [
-        f"Affiliate Manager to verify {len(risks)} high-priority programs flagged this week.",
-        f"Review {unknown_lic} programs with unknown license before engagement.",
-        "Update verification status in database by Friday 15:00.",
-        "Monitor SpinBet Affiliates and LuckyNova — community signals mixed.",
-        "Schedule weekly scan every Monday 09:00 to automate detection pipeline.",
-    ]
-    for rec in recs:
-        st.markdown(f'<div class="rec-card">✅ {rec}</div>', unsafe_allow_html=True)
-
-    st.markdown('<div class="section-title">Export</div>', unsafe_allow_html=True)
-    ex1, ex2 = st.columns(2)
+    st.markdown('<div class="sec">Export</div>', unsafe_allow_html=True)
+    ex1,ex2 = st.columns(2)
     with ex1:
-        buf2 = io.StringIO()
-        top5.to_csv(buf2, index=False)
-        st.download_button("⬇ Export Top Opportunities CSV", buf2.getvalue(), f"ceo_digest_{TODAY}.csv", "text/csv", use_container_width=True)
+        b1 = io.StringIO(); top5.to_csv(b1, index=False)
+        st.download_button("⬇ Export Top Opportunities", b1.getvalue(), f"opportunities_{TODAY}.csv", "text/csv", use_container_width=True)
     with ex2:
-        buf3 = io.StringIO()
-        risks.to_csv(buf3, index=False)
-        st.download_button("⬇ Export Risk Flags CSV", buf3.getvalue(), f"risk_flags_{TODAY}.csv", "text/csv", use_container_width=True)
+        b2 = io.StringIO(); risks_df.to_csv(b2, index=False)
+        st.download_button("⬇ Export Risk Flags", b2.getvalue(), f"risks_{TODAY}.csv", "text/csv", use_container_width=True)
 
 
-# ════════════════════════ FOOTER ════════════════════════
+# FOOTER
 st.markdown(f"""
-<div class="app-footer">
-  <div class="footer-left">© 2026 Affiliate Intelligence Platform. Internal use only.</div>
-  <div class="footer-right">
-    <span class="footer-badge">MVP v1.0</span>
-    <span class="footer-badge">Built in 48h</span>
-    <span class="footer-badge">Budget &lt;$200</span>
-    <span class="footer-badge">Status: Production Prototype</span>
+<div style="margin-top:60px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.04);
+  display:flex;justify-content:space-between;align-items:center;">
+  <div style="font-size:12px;color:#27272A;">© 2026 Affiliate Intelligence Platform</div>
+  <div style="display:flex;gap:10px;">
+    {"".join([f'<span style="font-size:10px;color:#3F3F46;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);padding:4px 10px;border-radius:5px;">{b}</span>' for b in ["MVP v1.0","Built in 48h","Budget <$200","Production Prototype"]])}
   </div>
 </div>
 """, unsafe_allow_html=True)
