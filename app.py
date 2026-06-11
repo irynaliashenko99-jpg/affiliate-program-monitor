@@ -831,15 +831,92 @@ with tab1:
             st.session_state.page += 1
             st.rerun()
 
-    page_df = filtered_sorted.iloc[st.session_state.page*rows_per_page:(st.session_state.page+1)*rows_per_page]
-    st.dataframe(page_df, use_container_width=True, height=480,
-        column_config={
-            "Name": st.column_config.TextColumn("Program Name", width="medium"),
-            "Date Detected": st.column_config.DateColumn("Detected", format="DD MMM YYYY"),
-            "Commission": st.column_config.TextColumn("Commission"),
-            "Affiliate URL": st.column_config.TextColumn("URL"),
-            "Notes": st.column_config.TextColumn("Notes", width="large"),
-        }, hide_index=True)
+    page_df = filtered_sorted.iloc[st.session_state.page*rows_per_page:(st.session_state.page+1)*rows_per_page].copy()
+
+    def badge_html(s):
+        if s == "New":       return '<span style="display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(124,58,237,0.15);color:#A78BFA;border:1px solid rgba(124,58,237,0.25);">New</span>'
+        if s == "To Verify": return '<span style="display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(245,158,11,0.12);color:#F59E0B;border:1px solid rgba(245,158,11,0.2);">To Verify</span>'
+        if s == "Verified":  return '<span style="display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(34,197,94,0.1);color:#22C55E;border:1px solid rgba(34,197,94,0.2);">Verified</span>'
+        return                       '<span style="display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(239,68,68,0.1);color:#EF4444;border:1px solid rgba(239,68,68,0.2);">Rejected</span>'
+
+    def priority_html(p):
+        if p == "High":   return '<span style="color:#EF4444;font-size:12px;font-weight:600;">High</span>'
+        if p == "Medium": return '<span style="color:#F59E0B;font-size:12px;font-weight:600;">Medium</span>'
+        return                    '<span style="color:#71717A;font-size:12px;font-weight:600;">Low</span>'
+
+    rows_html = ""
+    for _, r in page_df.iterrows():
+        rows_html += f"""
+        <tr>
+          <td style="padding:12px 14px;color:#FFFFFF;font-weight:500;font-size:13px;">{r['Name']}</td>
+          <td style="padding:12px 14px;color:#A1A1AA;font-size:13px;">{r['Date Detected']}</td>
+          <td style="padding:12px 14px;color:#A1A1AA;font-size:13px;">{r['Source']}</td>
+          <td style="padding:12px 14px;color:#A1A1AA;font-size:13px;">{r['GEO']}</td>
+          <td style="padding:12px 14px;color:#A1A1AA;font-size:13px;">{r['License']}</td>
+          <td style="padding:12px 14px;color:#A1A1AA;font-size:13px;">{r['Commission']}</td>
+          <td style="padding:12px 14px;">{badge_html(r['Status'])}</td>
+          <td style="padding:12px 14px;">{priority_html(r['Priority'])}</td>
+          <td style="padding:12px 14px;color:#52525B;font-size:12px;max-width:200px;">{r['Notes']}</td>
+        </tr>"""
+
+    table_html = f"""
+    <div style="overflow-x:auto;border-radius:12px;border:1px solid rgba(255,255,255,0.08);">
+      <table style="width:100%;border-collapse:collapse;background:#111111;">
+        <thead>
+          <tr style="background:#18181B;border-bottom:1px solid rgba(255,255,255,0.08);">
+            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;white-space:nowrap;">Program</th>
+            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;white-space:nowrap;">Detected</th>
+            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;white-space:nowrap;">Source</th>
+            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;white-space:nowrap;">GEO</th>
+            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;white-space:nowrap;">License</th>
+            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;white-space:nowrap;">Commission</th>
+            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;white-space:nowrap;">Status</th>
+            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;white-space:nowrap;">Priority</th>
+            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {''.join(['<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">' + r[4:] if i % 2 == 1 else r for i, r in enumerate(rows_html.strip().split('<tr>')[1:])])}
+        </tbody>
+      </table>
+    </div>"""
+
+    # Simpler, more reliable render
+    rows_final = ""
+    for i, (_, r) in enumerate(page_df.iterrows()):
+        bg = "background:rgba(255,255,255,0.015);" if i % 2 == 1 else ""
+        rows_final += f"""<tr style="border-bottom:1px solid rgba(255,255,255,0.04);{bg}">
+          <td style="padding:12px 14px;color:#FFFFFF;font-weight:500;font-size:13px;">{r['Name']}</td>
+          <td style="padding:12px 14px;color:#A1A1AA;font-size:12px;white-space:nowrap;">{r['Date Detected']}</td>
+          <td style="padding:12px 14px;color:#A1A1AA;font-size:12px;">{r['Source']}</td>
+          <td style="padding:12px 14px;color:#A1A1AA;font-size:12px;">{r['GEO']}</td>
+          <td style="padding:12px 14px;color:#A1A1AA;font-size:12px;">{r['License']}</td>
+          <td style="padding:12px 14px;color:#A1A1AA;font-size:12px;">{r['Commission']}</td>
+          <td style="padding:12px 14px;">{badge_html(r['Status'])}</td>
+          <td style="padding:12px 14px;">{priority_html(r['Priority'])}</td>
+          <td style="padding:12px 14px;color:#52525B;font-size:12px;">{r['Notes']}</td>
+        </tr>"""
+
+    st.markdown(f"""
+    <div style="overflow-x:auto;border-radius:12px;border:1px solid rgba(255,255,255,0.08);margin-top:8px;">
+      <table style="width:100%;border-collapse:collapse;background:#111111;">
+        <thead>
+          <tr style="background:#18181B;border-bottom:1px solid rgba(255,255,255,0.08);">
+            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;">Program</th>
+            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;white-space:nowrap;">Detected</th>
+            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;">Source</th>
+            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;">GEO</th>
+            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;">License</th>
+            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;">Commission</th>
+            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;">Status</th>
+            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;">Priority</th>
+            <th style="padding:11px 14px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#52525B;">Notes</th>
+          </tr>
+        </thead>
+        <tbody>{rows_final}</tbody>
+      </table>
+    </div>
+    """, unsafe_allow_html=True)
 
     # ── Monitoring Sources
     st.markdown('<div class="section-title">Monitoring Sources</div>', unsafe_allow_html=True)
