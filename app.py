@@ -364,10 +364,72 @@ with tab1:
     </div>
     """, unsafe_allow_html=True)
 
+    # ── EXECUTIVE RECOMMENDATION ──
+    st.markdown(f"""
+    <div style="background:linear-gradient(135deg,rgba(124,58,237,0.07),rgba(109,40,217,0.03));
+      border:1px solid rgba(124,58,237,0.18);border-radius:16px;padding:28px 36px;margin-bottom:36px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+        color:#6D28D9;margin-bottom:14px;">◈ EXECUTIVE RECOMMENDATION · THIS WEEK</div>
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:40px;align-items:start;">
+        <div>
+          <div style="font-size:18px;font-weight:700;color:#FFFFFF;margin-bottom:16px;letter-spacing:-.2px;">
+            3 actions required to maximize this week's intelligence
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:flex-start;gap:12px;">
+              <span style="font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;
+                background:rgba(139,92,246,0.12);color:#A78BFA;min-width:32px;text-align:center;">01</span>
+              <div style="font-size:13px;color:#A1A1AA;line-height:1.5;">
+                <strong style="color:#FFFFFF;">Review 3 high-potential affiliate programs</strong> — 
+                Opportunity scores above 70 with verified or new-launch status. Early contact before market saturation.
+              </div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px;">
+              <span style="font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;
+                background:rgba(239,68,68,0.1);color:#EF4444;min-width:32px;text-align:center;">02</span>
+              <div style="font-size:13px;color:#A1A1AA;line-height:1.5;">
+                <strong style="color:#FFFFFF;">Block onboarding of 1 high-risk partner</strong> — 
+                Fortune Affiliates: 7 delayed payment complaints in 90 days. Do not engage until payment record is clean.
+              </div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px;">
+              <span style="font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;
+                background:rgba(245,158,11,0.1);color:#F59E0B;min-width:32px;text-align:center;">03</span>
+              <div style="font-size:13px;color:#A1A1AA;line-height:1.5;">
+                <strong style="color:#FFFFFF;">Verify licensing of {to_ver} newly detected programs</strong> — 
+                {len(df[df['License']=='Unknown'])} have unknown license status. Compliance risk if onboarded without verification.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="border-left:1px solid rgba(255,255,255,0.06);padding-left:32px;">
+          <div style="margin-bottom:20px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+              color:#3F3F46;margin-bottom:8px;">Estimated effort</div>
+            <div style="font-size:26px;font-weight:800;color:#FFFFFF;letter-spacing:-1px;">4–6 hours</div>
+            <div style="font-size:12px;color:#52525B;margin-top:2px;">for the team this week</div>
+          </div>
+          <div style="margin-bottom:20px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+              color:#3F3F46;margin-bottom:8px;">Potential upside</div>
+            <div style="font-size:26px;font-weight:800;color:#22C55E;letter-spacing:-1px;">3</div>
+            <div style="font-size:12px;color:#52525B;margin-top:2px;">new affiliate partnerships</div>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+              color:#3F3F46;margin-bottom:8px;">Risk avoided</div>
+            <div style="font-size:26px;font-weight:800;color:#EF4444;letter-spacing:-1px;">1</div>
+            <div style="font-size:12px;color:#52525B;margin-top:2px;">reputational incident blocked</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+
     # ── HIGHEST VALUE OPPORTUNITIES ──
     st.markdown('<div class="sec-label">Highest Value Opportunities</div>', unsafe_allow_html=True)
 
-    top_ops = df[(df["Opp"] >= 60)].sort_values("Opp", ascending=False).head(5)
+    top_ops = df[(df["Opp"] >= 60)].sort_values("Opp", ascending=False).head(3)
 
     for _, row in top_ops.iterrows():
         reasons = opp_reasons(dict(row))
@@ -603,32 +665,43 @@ with tab1:
         if (i+1) % 4 == 0 and i+1 < len(src_cards):
             sc_cols = st.columns(4)
 
-    # Manual scan (secondary, minimal)
+    # ── AUTOMATED ENGINE STATUS (no button) ──
     st.markdown('<br>', unsafe_allow_html=True)
-    sc1,sc2,sc3 = st.columns([1,4,1])
-    with sc1:
-        run = st.button("◈  Force Scan", use_container_width=True)
-    with sc2:
-        st.markdown(f"<div style='font-size:12px;color:#3F3F46;padding:10px 0;'>Automated scans run daily at 09:00. Last: {last_txt} · Sources checked: 8 · New findings: {today_n}</div>", unsafe_allow_html=True)
-
-    if run:
-        import time
-        pb = st.progress(0,"Initializing...")
-        for i,s in enumerate(SRCS):
-            time.sleep(0.22)
-            pb.progress((i+1)/len(SRCS), f"Scanning {s}...")
-        time.sleep(0.2); pb.empty()
-        ex = set(st.session_state.df["Name"])
-        av = [p for p in NEW_POOL if p["Name"] not in ex] or NEW_POOL
-        batch = random.sample(av, min(random.randint(3,5), len(av)))
-        t = datetime.now()
-        for p in batch:
-            p["Date Detected"] = TODAY
-            p["Risk"] = calc_risk(p); p["Opp"] = calc_opp(p)
-        st.session_state.df = pd.concat([st.session_state.df, pd.DataFrame(batch)], ignore_index=True)
-        st.session_state.last_scan = t
-        st.success(f"✅ Scan complete — {len(batch)} new programs detected.")
-        st.rerun()
+    st.markdown(f"""
+    <div style="background:#0C0C0F;border:1px solid rgba(255,255,255,0.05);border-radius:14px;
+      padding:24px 32px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:0;
+      align-items:center;">
+      <div style="padding-right:24px;border-right:1px solid rgba(255,255,255,0.05);">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+          color:#3F3F46;margin-bottom:8px;">System Status</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="width:7px;height:7px;border-radius:50%;background:#22C55E;
+            box-shadow:0 0 8px #22C55E;display:inline-block;"></span>
+          <span style="font-size:14px;font-weight:600;color:#22C55E;">Automated</span>
+        </div>
+      </div>
+      <div style="padding:0 24px;border-right:1px solid rgba(255,255,255,0.05);">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+          color:#3F3F46;margin-bottom:8px;">Last Scan</div>
+        <div style="font-size:14px;font-weight:600;color:#FFFFFF;">{last_txt}</div>
+      </div>
+      <div style="padding:0 24px;border-right:1px solid rgba(255,255,255,0.05);">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+          color:#3F3F46;margin-bottom:8px;">Sources Checked</div>
+        <div style="font-size:14px;font-weight:600;color:#FFFFFF;">8 of 8</div>
+      </div>
+      <div style="padding:0 24px;border-right:1px solid rgba(255,255,255,0.05);">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+          color:#3F3F46;margin-bottom:8px;">New Findings</div>
+        <div style="font-size:14px;font-weight:600;color:#A78BFA;">{today_n} programs</div>
+      </div>
+      <div style="padding-left:24px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+          color:#3F3F46;margin-bottom:8px;">Next Scan</div>
+        <div style="font-size:14px;font-weight:600;color:#52525B;">Tomorrow 09:00</div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════════════════
