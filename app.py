@@ -477,7 +477,7 @@ if source_filter != "All":
 
 st.markdown(f"<div style='font-size:12px; color:#6b6b80; margin-bottom:8px;'>Showing {len(filtered)} of {len(df)} programs</div>", unsafe_allow_html=True)
 
-st.dataframe(
+st.table(filtered.reset_index(drop=True))
     filtered.reset_index(drop=True),
     use_container_width=True,
     height=420,
